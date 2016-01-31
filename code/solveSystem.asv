@@ -1,16 +1,11 @@
 clear all
 close all
 
-path = 'C:\Users\Espen\opticalflow\HamburgTaxi\';
-ext = '*.tif';
+% g1 = imread('C:\Users\Espen\opticalflow\HamburgTaxi\taxi-00.tif');
+% g2 = imread('C:\Users\Espen\opticalflow\HamburgTaxi\taxi-01.tif');
 
-imCol = getImages(path,ext);
-
-g1 = imCol{1};
-g2 = imCol{2};
-
-% g1 = imread('/home/shomec/e/espenjv/Semester Project/2011_09_26/2011_09_26_drive_0060_extract/image_00/data/0000000000.png');
-% g2 = imread('/home/shomec/e/espenjv/Semester Project/2011_09_26/2011_09_26_drive_0060_extract/image_00/data/0000000001.png');
+g1 = imread('/home/shomec/e/espenjv/Semester Project/2011_09_26/2011_09_26_drive_0060_extract/image_00/data/0000000000.png');
+g2 = imread('/home/shomec/e/espenjv/Semester Project/2011_09_26/2011_09_26_drive_0060_extract/image_00/data/0000000001.png');
 
 g = g1;
 
