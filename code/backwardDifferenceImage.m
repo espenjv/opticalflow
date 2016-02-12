@@ -1,7 +1,6 @@
 function D = backwardDifferenceImage(g)
-%forwardDifferenceImage Computes approximation of the image gradient using
-%forward difference
-%   Detailed explanation goes here
+%backwardDifferenceImage Computes approximation of the image gradient using
+%backward difference
 
     [m,n] = size(g);
 

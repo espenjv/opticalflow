@@ -1,6 +1,6 @@
 function V = smoothnessHS(m,n)
 %smoothnessHS Computes smoothness term by Horn and Schunck
-%   Detailed explanation goes here
+%   Uses forward difference to compute the first derivatives
 
     [Lx,Ly] = forwardDifference(m,n);
     
