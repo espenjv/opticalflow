@@ -1,0 +1,39 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+
+
+\newcommand{\vectornorm}[1]{\left\|#1\right\|}
+
+\newcommand{\threepartdef}[6]
+{
+	\left\{
+		\begin{array}{lll}
+			#1 & \mbox{for } #2 \\
+			#3 & \mbox{for } #4 \\
+			#5 & \mbox{for } #6
+		\end{array}
+	\right.
+}
+
+\begin{document}
+\title{Semester project}
+\author{Espen Johansen Velsvik}
+\maketitle
+
+\section*{Motivation}
+When an observer of an object moves relative to the object, there is an apparent relative motion in the image plane of the observer. The problem of determining this relative motion from a sequence of images is called the Optical Flow problem. The analysis is not so much dependent on prior knowledge of the scene, but on the image sequence itself. This independency makes it applicable in many different fields. More concisely, one is looking for a flow vector $u \in \mathbb{R}^2$ using the change in brightness $f(x,t)$ from one frame to another. This is problematic because we can not independently determine a vector of 2 components using one constraint coming from he change in image brightness at a point $x$. Thus we need to impose other constraints to make the problem solvable.
+
+\section*{Basic Aspects}
+The starting point for the variational approach to optical flow is the so called Aperture problem. Let $f(x,t)$ be the grayscale value of some image sequence. To constrain our problem we make an assumption regarding invariance in the brightness: a point moving with velocity $\frac{dx}{dt} = u(x,t)$ along the trajectory $x(t)$ over time $t$ does not change its appearance. In mathematical notation this is (under perfect conditions) equivalent to the following:
+\begin{align*}
+\frac{d}{dt}f(x(t),t) = 0.
+\end{align*}
+
+\section*{The approach by Horn and Schunck}
+
+\end{document}
