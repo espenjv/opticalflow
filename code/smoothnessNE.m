@@ -7,7 +7,7 @@ function V = smoothnessNE(Dx,Dy,m,n,kappa)
 %   parameter > 0.
 
     grad = Dx.^2+Dy.^2;
-    denom = grad + kappa^2;
+    denom = grad + 2*kappa^2;
     sx = Dx.^2./denom;
     sy = Dy.^2./denom;
     sxy = Dx.*Dy./denom;

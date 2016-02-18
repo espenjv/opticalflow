@@ -2,7 +2,7 @@ close all
 clear all
 
 
-method = 'HS';
+method = 'SH';
 image_set = 'taxi';
 load_set = 0;
 gradient = 'sobel';
@@ -53,21 +53,29 @@ c = reshape(c,[m*n 1]);
 
 if strcmp(method,'HS')
     % Uses the method of Horn and Schunck
+    c = timeDisc(g1,g2);
+    c = reshape(c,[m*n 1]);
     M = D'*D;
     V = smoothnessHS(m,n);
     regu = 0.01;
+    G = M + regu^(-2)*V;
+    u = G\(-D'*c);
 elseif strcmp(method,'NE')
     % Uses the method of Nagel and Enkelmann
+    c = timeDisc(g1,g2);
+    c = reshape(c,[m*n 1]);
     M = D'*D;
-    kappa = 0.01;
+    kappa = 10;
     V = smoothnessNE(Dx,Dy,m,n,kappa);
-    regu = 0.001;
+    regu = 0.007;
+    G = M + regu^(-2)*V;
+    u = G\(-D'*c);
+elseif strcmp(method,'SH')
+    param = 0.1;
+    c = timeDisc(g1,g2);
+    c = reshape(c,[m*n 1]);
+    u = flowdrivenSH(Dx,Dy,c,m,n,param,'PM');
 end
-
-
-G = M + regu^(-2)*V;
-u = G\(-D'*c);
-
 display.displayImages(g1,g2)
 
 display.displayFlowfield(u,m,n)
