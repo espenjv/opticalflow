@@ -26,14 +26,42 @@
 \maketitle
 
 \section*{Motivation}
-When an observer of an object moves relative to the object, there is an apparent relative motion in the image plane of the observer. The problem of determining this relative motion from a sequence of images is called the Optical Flow problem. The analysis is not so much dependent on prior knowledge of the scene, but on the image sequence itself. This independency makes it applicable in many different fields. More concisely, one is looking for a flow vector $u \in \mathbb{R}^2$ using the change in brightness $f(x,t)$ from one frame to another. This is problematic because we can not independently determine a vector of 2 components using one constraint coming from he change in image brightness at a point $x$. Thus we need to impose other constraints to make the problem solvable.
+When an observer of an object moves relative to the object, there is an apparent relative motion in the image plane of the observer. The problem of determining this relative motion from a sequence of images is called the Optical Flow problem. The analysis is not so much dependent on prior knowledge of the scene, but on the image sequence itself. This independency makes it applicable in many different fields. More concisely, one wants to find a flow vector components $u,v \in \mathbb{R}$ by looking at the change in brightness $f(x,t)$ at a specific pixel from one frame to another. This is problematic because we can not independently determine a vector of 2 components using one constraint coming from the change in image brightness at a point $x$. Thus we need to impose other constraints to make the problem solvable.
 
-\section*{Basic Aspects}
-The starting point for the variational approach to optical flow is the so called Aperture problem. Let $f(x,t)$ be the grayscale value of some image sequence. To constrain our problem we make an assumption regarding invariance in the brightness: a point moving with velocity $\frac{dx}{dt} = u(x,t)$ along the trajectory $x(t)$ over time $t$ does not change its appearance. In mathematical notation this is (under perfect conditions) equivalent to the following:
+\section*{The Brightness constancy assumption}
+The starting point for the variational approach to optical flow is the so called brightness constancy assumption of Horn and Schunck \cite{HS}. Let $f(x,t)$ be the grayscale value of some image sequence. To constrain our problem we make an assumption regarding invariance in the brightness: a point moving with velocity $\frac{dx}{dt} = u(x,t)$ along the trajectory $x(t)$ over time $t$ does not change its appearance. This assumption is called the brightness constancy assumption, and it means that if the scene has the same lighting, then movement of an object along a trajectory does not change its brightness. In mathematical notation this is (under perfect conditions) equivalent to the following:
 \begin{align*}
 \frac{d}{dt}f(x(t),t) = 0.
 \end{align*}
+By using the chain rule for differentiation, and defining $\frac{dx}{dt} = u$ and $\frac{dy}{dt} = v$, one gets
+\begin{align*}
+\frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t} = 0,
+\end{align*}
+or equivalently $\nabla f \cdot (u,v) = \frac{\partial f}{\partial t}$. So from this equation we can only determine the components of the movement in the direction of the gradient, or what is known as the normal flow. This is called the Aperture problem, and to be able to compute the components of the flow vector one needs another constraint. Following the notation and terminology of \cite{OFH}, the constraint coming from the brightness constancy assumption is called the model term $M(u,v)$
+
+\section*{The Smoothness constraint}
+The second constraint is referred to as the smoothness constraint. It says that points can not move independently in the brightness pattern. There has to be some smoothness in the flow vector for points belonging to the same object. In other words, points on the same object moves with the same velocity. The smoothness term will most often be a function of the gradients of the vector components and is noted as $V(\nabla u, \nabla v)$.
+
+\section*{The variational formulation}
+To combine the two constraints into one term we form a global energy function consisting of the model term and the smoothness term:
+\begin{align}
+E(u,v) = \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) dx dy,
+\end{align}
+where $\sigma > 0$ is a regularization parameter. 
 
 \section*{The approach by Horn and Schunck}
+The method of Horn and Shunck \cite{HS} formed the basis of further research in the field of 
+
+\begin{thebibliography}{}
+
+\bibitem{HS}
+Horn, B. and Schunck, B. (1981). Determining optical flow. \emph{Artificial Intelligence}, 17, 185-203.
+
+\bibitem{OFH}
+Zimmer, H., Bruhn, A., Weickert, J. (2011). Optic Flow in Harmony \emph{International Journal of Computer Vision}, 93, 368-388
+
+\end{thebibliography}
+
 
 \end{document}
+
