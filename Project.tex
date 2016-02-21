@@ -25,10 +25,10 @@
 \author{Espen Johansen Velsvik}
 \maketitle
 
-\section*{Motivation}
+\section{Motivation}
 When an observer of an object moves relative to the object, there is an apparent relative motion in the image plane of the observer. The problem of determining this relative motion from a sequence of images is called the Optical Flow problem. The analysis is not so much dependent on prior knowledge of the scene, but on the image sequence itself. This independency makes it applicable in many different fields. More concisely, one wants to find a flow vector components $u,v \in \mathbb{R}$ by looking at the change in brightness $f(x,t)$ at a specific pixel from one frame to another. This is problematic because we can not independently determine a vector of 2 components using one constraint coming from the change in image brightness at a point $x$. Thus we need to impose other constraints to make the problem solvable.
 
-\section*{The Brightness constancy assumption}
+\section{The Brightness constancy assumption}
 The starting point for the variational approach to optical flow is the so called brightness constancy assumption of Horn and Schunck \cite{HS}. Let $f(x,t)$ be the grayscale value of some image sequence. To constrain our problem we make an assumption regarding invariance in the brightness: a point moving with velocity $\frac{dx}{dt} = u(x,t)$ along the trajectory $x(t)$ over time $t$ does not change its appearance. This assumption is called the brightness constancy assumption, and it means that if the scene has the same lighting, then movement of an object along a trajectory does not change its brightness. In mathematical notation this is (under perfect conditions) equivalent to the following:
 \begin{align*}
 \frac{d}{dt}f(x(t),t) = 0.
@@ -37,20 +37,56 @@ By using the chain rule for differentiation, and defining $\frac{dx}{dt} = u$ an
 \begin{align*}
 \frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t} = 0,
 \end{align*}
-or equivalently $\nabla f \cdot (u,v) = \frac{\partial f}{\partial t}$. So from this equation we can only determine the components of the movement in the direction of the gradient, or what is known as the normal flow. This is called the Aperture problem, and to be able to compute the components of the flow vector one needs another constraint. Following the notation and terminology of \cite{OFH}, the constraint coming from the brightness constancy assumption is called the model term $M(u,v)$
+or equivalently $\nabla f \cdot (u,v) = \frac{\partial f}{\partial t}$. So from this equation we can only determine the components of the movement in the direction of the gradient, or what is known as the normal flow. This is called the Aperture problem, and to be able to compute the components of the flow vector one needs another constraint. Following the notation and terminology of \cite{OFH}, the constraint coming from the brightness constancy assumption is called the data term $M(u,v)$
 
-\section*{The Smoothness constraint}
-The second constraint is referred to as the smoothness constraint. It says that points can not move independently in the brightness pattern. There has to be some smoothness in the flow vector for points belonging to the same object. In other words, points on the same object moves with the same velocity. The smoothness term will most often be a function of the gradients of the vector components and is noted as $V(\nabla u, \nabla v)$.
+\section{The Smoothness constraint}
+The second constraint is referred to as the smoothness constraint. It says that points can not move independently in the brightness pattern. There has to be some smoothness in the flow vector for points belonging to the same object. In other words, points on the same object moves with the same velocity. A natural way of obtaining a smoother solution would be to minimize some term depending on the sizes of the gradients in some direction. For now we let this smoothness term be $V(\nabla u, \nabla v)$.
 
-\section*{The variational formulation}
-To combine the two constraints into one term we form a global energy function consisting of the model term and the smoothness term:
+\section{The variational formulation}
+To combine the two constraints into one term we form a global energy function consisting of the data term and the smoothness term:
 \begin{align}
 E(u,v) = \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) dx dy,
 \end{align}
-where $\sigma > 0$ is a regularization parameter. 
+where $\sigma > 0$ is a regularization parameter. The problem is now to find the minima of the energy functional $E(u,v)$. From calculus of variations we have that if $y*$ minimizes a functional F
 
-\section*{The approach by Horn and Schunck}
-The method of Horn and Shunck \cite{HS} formed the basis of further research in the field of 
+\begin{equation}
+\label{EL_regu}
+  \begin{aligned}
+\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} div(\textbf{D} \nabla u) \\
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} div(\textbf{D} \nabla v),
+  \end{aligned}
+\end{equation}
+where \textbf{D} is a diffusion matrix steering the direction of the diffusion.
+
+
+\section{The approach by Horn and Schunck}
+The research of Horn and Shunck \cite{HS} has formed the basis of further research in the field of optical flow. They proposed the following quadratic penalised data term
+\begin{align}
+M(\textbf{w}) = \frac{1}{2}(\nabla f \textbf{w} + \frac{\partial f}{\partial t})^2 = \frac{1}{2}(\frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t})^2,
+\end{align}
+where $\textbf{w} = (u,v)$. Most of the methods in variational optical flow use this data term. The smoothness term used by Horn and Schunck is the following
+\begin{align*}
+V(\nabla u, \nabla v) = |\nabla u|^2 + |\nabla v|^2.
+\end{align*}
+This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix \textbf{D} being the identity matrix.
+
+\subsection{Discretizing the Horn and Schunck method}
+From the Euler-Lagrange equations we have to discretize
+\begin{equation}
+\begin{aligned}
+\frac{\partial M}{\partial u} = (\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} \\
+\frac{\partial M}{\partial v} = (\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y}. \\
+\end{aligned}
+\end{equation}
+To write these two equations in one, we form the following block matrix
+
+
+
+
+Now we let $G_x$ and $G_y$ be the discretization of the image derivatives in the x- and y-direction respectively and  we get the following expression for the discretized data term:
+\begin{align*}
+G_y
+\end{align*}
 
 \begin{thebibliography}{}
 
