@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{bm}
+\newcommand\bigzero{\makebox(0,0){\text{\large 0}}}
 
 
 \newcommand{\vectornorm}[1]{\left\|#1\right\|}
@@ -45,9 +46,20 @@ The second constraint is referred to as the smoothness constraint. It says that 
 \section{The variational formulation}
 To combine the two constraints into one term we form a global energy function consisting of the data term and the smoothness term:
 \begin{align}
-E(u,v) = \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) dx dy,
+E(u,v) = \frac{1}{1} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) dx dy,
 \end{align}
 where $\sigma > 0$ is a regularization parameter. The problem is now to find the minima of the energy functional $E(u,v)$. From calculus of variations we have that if $y*$ minimizes a functional F
+
+\begin{equation}
+\label{EL}
+  \begin{aligned}
+\frac{\partial M}{\partial u} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial u_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial u_y} ) = 0 \\
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial v_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial v_y} ) = 0, \\
+  \end{aligned}
+\end{equation}
+where the notation $q_{x_i} = \frac{\partial q}{\partial x_i}$ is used. 
+
+
 
 \begin{equation}
 \label{EL_regu}
@@ -62,39 +74,138 @@ where \textbf{D} is a diffusion matrix steering the direction of the diffusion.
 \section{The approach by Horn and Schunck}
 The research of Horn and Shunck \cite{HS} has formed the basis of further research in the field of optical flow. They proposed the following quadratic penalised data term
 \begin{align}
-M(\textbf{w}) = \frac{1}{2}(\nabla f \textbf{w} + \frac{\partial f}{\partial t})^2 = \frac{1}{2}(\frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t})^2,
+M(\textbf{w}) = (\nabla f \textbf{w} + \frac{\partial f}{\partial t})^2 = (\frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t})^2,
 \end{align}
-where $\textbf{w} = (u,v)$. Most of the methods in variational optical flow use this data term. The smoothness term used by Horn and Schunck is the following
+where $\textbf{w} = (u,v)$. Most of the methods in variational optical flow use this data term. The contribution to (\ref{EL}) are the following two terms
+\begin{equation}
+\begin{aligned}
+\frac{\partial M}{\partial u} = 2(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} \\
+\frac{\partial M}{\partial v} = 2(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y}. \\
+\end{aligned}
+\end{equation}
+
+The smoothness term used by Horn and Schunck is the following
 \begin{align*}
 V(\nabla u, \nabla v) = |\nabla u|^2 + |\nabla v|^2.
 \end{align*}
-This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix \textbf{D} being the identity matrix.
-
-\subsection{Discretizing the Horn and Schunck method}
-From the Euler-Lagrange equations we have to discretize
+This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix \textbf{D} being the identity matrix. Using this function as a flow regularizer gives
+\begin{align*}
+\frac{\partial V}{\partial q^i_{x_i}} = 2q^i_{x_i},
+\end{align*}
+for $q^i = u,v$ and $x_i = x, y$. Dividing by the factor of 2 in all terms results in (\ref{EL}) taking the form 
 \begin{equation}
+\label{EL_HS}
 \begin{aligned}
-\frac{\partial M}{\partial u} = (\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} \\
-\frac{\partial M}{\partial v} = (\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y}. \\
+(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial u}{\partial x} + \frac{\partial}{\partial y} \frac{\partial u}{\partial y} ) = 0 \\
+(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial v}{\partial x} + \frac{\partial}{\partial y} \frac{\partial v}{\partial y} ) = 0 \\
 \end{aligned}
 \end{equation}
-To write these two equations in one, we form the following block matrix
-
-
-
-
-Now we let $G_x$ and $G_y$ be the discretization of the image derivatives in the x- and y-direction respectively and  we get the following expression for the discretized data term:
+or equivalently
 \begin{align*}
-G_y
+(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} - \frac{1}{\sigma^2}(\frac{\partial^2}{\partial x^2} +  \frac{\partial^2}{\partial y^2} ) u = 0 \\
+(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y} - \frac{1}{\sigma^2}(\frac{\partial^2}{\partial x^2} +  \frac{\partial^2}{\partial y^2}) v = 0 \\
 \end{align*}
+
+
+
+\subsection{Discretizing the Horn and Schunck method}
+Let now our image be of dimension m-by-n, and let $f^i$ be the image at $t=i$. Also, we let $(x^i)_ {i \in [mn]}$ define a regular 2-dimensional grid in $\Omega$. The corresponding vector representation of the image $f$ is denoted as $\tilde{\textbf{f}}(x^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\tilde{\textbf{w}}$ is represented as the following vector in $\mathbb{R}^{2mn}$:
+\begin{align*}
+     \tilde{\textbf{w}}=\begin{bmatrix}
+         u(x^i)_{i\in [mn]}  \\
+         v(x^i)_{i \in [mn]} \\
+        \end{bmatrix}.
+\end{align*}
+For the discretization of the image gradient in (\ref{EL_HS}) the sobel filters
+\begin{align*}
+G_x =
+\left[ 
+\begin{tabular}{ l c r }
+  -1 & 0 & 1 \\
+  -2 & 0 & 2 \\
+  -1 & 0 & 1 \\
+\end{tabular}
+\right] & &\text{and} & & 
+G_y =
+\left[ 
+\begin{tabular}{ l c r }
+  -1 & -2 & -1 \\
+  0 & 0 & 0 \\
+  1 & 2 & 1 \\
+\end{tabular}
+\right] &
+\end{align*}
+were convolved with the image $f^1$ to produce the vectors $\tilde{\textbf{d}_x}(x^i)$ and $\tilde{\textbf{d}_y}(x^i)$ in $\mathbb{R}^{mn}$, approximating the image gradients of $\tilde{\textbf{f}}(x^i)$ in x- and y-direction respectively. The time derivative $\frac{\partial f}{\partial t}$ is discretized using forward difference as shown below:
+\begin{align*}
+\textbf{c} = \tilde{\textbf{f}}^2(x^i) - \tilde{\textbf{f}}^1(x^i),
+\end{align*} 
+where $\textbf{c}(x^i)$ is a vector in $\mathbb{R}^{mn}$. When choosing the derivative approximations for the flow vector in (\ref{EL_HS}), the first derivative was approximated using backward difference, and the second was approximated using forward difference. The resulting system to be solved is shown below:
+\begin{align}
+(D^T D + \frac{1}{\sigma^2} L^TL) \tilde{\textbf{w}} = - D^T \textbf{c}.
+\end{align}
+$D$ is the following block matrix:
+\begin{align*}
+D = \left[
+\begin{array}{c|c}
+D_x & D_y
+\end{array}
+\right],
+\end{align*}
+where $D_x$ and $D_y$ are diagonal matrices in $\mathbb{R}^{mn \times mn}$ with the elements of $\tilde{\textbf{d}_x}(x^i)$ and $\tilde{\textbf{d}_y}(x^i)$ along its diagonals respectively. $L$ is the following block matrix:
+\begin{align*}
+L = \left[
+\begin{array}{c|c}
+L_x & 0_{mn,mn} \\
+L_y & 0_{mn,mn} \\
+0_{mn,mn} & L_x \\
+0_{mn,mn} & L_y \\
+\end{array}
+\right],
+\end{align*}
+$Lx \in \mathbb{R}^{mn \times mn}$ being the following mn-by-mn block diagonal matrix:
+\begin{align*}
+L_x = \left[
+\begin{array}{c|c|c|c}
+I_{m,m} & -I_{m,m} & 0 & \cdots \\ \hline
+0 & \ddots & \ddots & 0 \\ \hline
+0 & 0 & I_{m,m} & -I_{m,m} \\
+\end{array}
+\right],
+\end{align*}
+and $L_y \in \mathbb{R}^{mn \times mn}$ the following band matrix:
+\begin{align*}
+L_y = \left[
+\begin{array}{c c c c}
+1 & -1 &  & \bigzero \\ 
+ \bigzero & \ddots & \ddots &  \\
+ &  & 1 & -1 \\
+\end{array}
+\right].
+\end{align*}
+The matrix multiplication with $L$ gives a forward difference approximation, and $-L^T$ gives a backward difference approximation. The matrix product $-L^TL$ is then the discretization of the second derivative in (\ref{EL_HS}).
+
+\section{Anisotropic image-driven regularization}
+The homogeneous regularizer of Horn and Schunck smoothes the flow field in all directions. Since we are looking for a flow field describing relative movement of objects, the boundary between objects will not have a smooth flow field unless they are moving at the same relative velocity. The anisotropic reguralizer of Nagel and Enkelmann \cite{NE} performs smoothing along the image gradients and prevents smoothing across image edges. This is done by introducing a regularised projection matrix $P$, defined as
+\begin{align*}
+P(\nabla f) = \frac{1}{|\nabla f|^2 + 2 \kappa^2} (\nabla^{\bot} f (\nabla^{\bot})^T + \kappa^2 I),
+\end{align*}
+where $\nabla^{\bot} f= \left[-\frac{\partial f}{\partial y}, \frac{\partial f}{\partial x}\right]^T$, and $\kappa > 0$ is a regularization parameter. The smoothness term of Nagel and Enkelmann can now be written as the following
+\begin{align*}
+V(\nabla u, \nabla v) = \nabla ^T u P(\nabla f) \nabla u + \nabla ^T v P(\nabla f) \nabla v,
+\end{align*}
+or written out 
 
 \begin{thebibliography}{}
 
 \bibitem{HS}
 Horn, B. and Schunck, B. (1981). Determining optical flow. \emph{Artificial Intelligence}, 17, 185-203.
 
+\bibitem{NE}
+Nagel, H. and Enkelmann, W. (1986). An investigation of smoothness constraints for the estimation of displacement vector fields from image sequences. \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 8, 565-593
+
 \bibitem{OFH}
 Zimmer, H., Bruhn, A., Weickert, J. (2011). Optic Flow in Harmony \emph{International Journal of Computer Vision}, 93, 368-388
+
 
 \end{thebibliography}
 
