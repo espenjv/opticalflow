@@ -2,8 +2,8 @@ close all
 clear all
 
 
-method = 'SH';
-image_set = 'taxi';
+method = 'HS';
+image_set = 'bicycle';
 load_set = 0;
 gradient = 'sobel';
 
@@ -35,6 +35,8 @@ end
 g = g1;
 [m,n] = size(g);
 
+g = gaussianConv(g);
+
 if strcmp(gradient,'sobel')
     [Dx,Dy] = sobelFilter(g);
 elseif strcmp(gradient,'forward')
@@ -57,7 +59,7 @@ if strcmp(method,'HS')
     c = reshape(c,[m*n 1]);
     M = D'*D;
     V = smoothnessHS(m,n);
-    regu = 0.01;
+    regu = 0.003;
     G = M + regu^(-2)*V;
     u = G\(-D'*c);
 elseif strcmp(method,'NE')
