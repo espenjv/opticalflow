@@ -7,11 +7,11 @@ function [] = displayFlowfield(u,m,n)
     
     figure
 
-    subplot(1,2,1)
-    imshow(F)
-    title('Flow vector absolute values')
-
-    subplot(1,2,2)
+%     subplot(1,2,1)
+%     imshow(F)
+%     title('Flow vector absolute values')
+% 
+%     subplot(1,2,2)
     imshow(flow_image)
     title('Flow vector')
 end
