@@ -46,18 +46,43 @@ The second constraint is referred to as the smoothness constraint. It says that 
 \section{The variational formulation}
 To combine the two constraints into one term we form a global energy function consisting of the data term and the smoothness term:
 \begin{align}
-E(u,v) = \frac{1}{1} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) dx dy,
+E(u,v) = \frac{1}{2} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) \, dx dy,
 \end{align}
-where $\sigma > 0$ is a regularization parameter. The problem is now to find the minima of the energy functional $E(u,v)$. From calculus of variations we have that if $y*$ minimizes a functional F
-
+where $\sigma > 0$ is a regularization parameter. The problem is now to find the minimum of the energy functional $E(u,v)$. From calculus of variations we have that if $u$ minimizes a functional $J(u) = \iint \limits_\Omega F(x,y,u,u_x,u_y) \, dxdy$ then the first variation must be zero:
+\begin{align*}
+\delta J(u) = \epsilon \frac{d}{d \epsilon} \left[ J(u + \epsilon \eta) \right] = 0 
+\end{align*}
+for an arbitrary function $\eta(x,y)$ assumed to vanish on the boundary. We get
+\begin{align*}
+\delta J(u) =& \epsilon \iint \limits_{\Omega} \frac{d}{d \epsilon} F(x,y,u + \epsilon \eta, u_x + \epsilon \eta_x, u_y + \epsilon \eta_y) \, dxdy \\
+=& \epsilon \iint \limits_{\Omega} \eta F_u + \eta_x F_{u_x} + \eta_y F_{u_y} \, dxdy \\
+=& \epsilon \iint \limits_{\Omega} \eta F_u + \frac{\partial}{\partial x} (\eta F_{u_x}) + \frac{\partial }{\partial y} (\eta F_{u_y}) - \eta \left( \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy
+\end{align*}
+Gauss' Theorem says that for continuous functions $f(x,y)$ and $g(x,y)$, and a piecewise smooth boundary $\Gamma$ we have that 
+\begin{align*}
+\iint \limits_\Omega f_x(x,y) + g_y(x,y) \, dx dy = \int_\Gamma f(x,y) \, dy - g(x,y) \, dx. 
+\end{align*}
+Using this result, we get the following
+\begin{align*}
+\delta J(u) &= \epsilon \iint \limits_{\Omega} \eta F_u - \eta \left( \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy + \epsilon \int_\Gamma \eta (F_{u_x} \, dy - F_{u_y} \, dx),
+\end{align*}
+but since $\eta = 0$ on the boundary $\Gamma$ we get
+\begin{align*}
+\delta J(u) &= \epsilon \iint \limits_{\Omega} \eta \left( F_u - \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy,
+\end{align*}
+for an arbitrary function $\eta(x,y)$. If this is to hold for an arbitrary $\eta(x,y)$ we must have that 
+\begin{align*}
+F_u - \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} = 0.
+\end{align*}
+This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional:
 \begin{equation}
 \label{EL}
   \begin{aligned}
 \frac{\partial M}{\partial u} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial u_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial u_y} ) = 0 \\
-\frac{\partial M}{\partial v} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial v_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial v_y} ) = 0, \\
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial v_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial v_y} ) = 0.
   \end{aligned}
 \end{equation}
-where the notation $q_{x_i} = \frac{\partial q}{\partial x_i}$ is used. 
+
 
 
 
@@ -196,6 +221,13 @@ V(\nabla u, \nabla v) = \nabla ^T u P(\nabla f) \nabla u + \nabla ^T v P(\nabla 
 or written out 
 
 \begin{thebibliography}{}
+
+\bibitem{CH}
+Courant, R. and Hilbert, D. (1953). Methods of Mathematical Physics. Vol. I (First English ed.), Interscience Publishers, New York
+
+\bibitem{Courant}
+Courant, R. (1947). Differential and Integral Calculus, Vol. II, 2nd edition, Interscience Publishers, New York
+
 
 \bibitem{HS}
 Horn, B. and Schunck, B. (1981). Determining optical flow. \emph{Artificial Intelligence}, 17, 185-203.
