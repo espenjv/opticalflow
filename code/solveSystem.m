@@ -3,7 +3,7 @@ clear all
 
 
 method = 'HS';
-image_set = 'bicycle';
+image_set = 'taxi';
 load_set = 0;
 gradient = 'sobel';
 
@@ -35,7 +35,7 @@ end
 g = g1;
 [m,n] = size(g);
 
-g = gaussianConv(g);
+% g = gaussianConv(g);
 
 if strcmp(gradient,'sobel')
     [Dx,Dy] = sobelFilter(g);
@@ -61,7 +61,7 @@ if strcmp(method,'HS')
     V = smoothnessHS(m,n);
     regu = 0.003;
     G = M + regu^(-2)*V;
-    u = G\(-D'*c);
+    w = G\(-D'*c);
 elseif strcmp(method,'NE')
     % Uses the method of Nagel and Enkelmann
     c = timeDisc(g1,g2);
@@ -80,5 +80,5 @@ elseif strcmp(method,'SH')
 end
 display.displayImages(g1,g2)
 
-display.displayFlowfield(u,m,n)
+display.displayFlowfield(w,m,n)
 

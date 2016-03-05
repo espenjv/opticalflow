@@ -6,10 +6,8 @@ function [Dx,Dy] = sobelFilter(g)
     Sy = Sx';
     [m,n] = size(g);
     
-    Dx = conv2(double(g),double(Sx));
-    Dx = Dx(2:m+1,2:n+1);
-    Dy = conv2(double(g),double(Sy));
-    Dy = Dy(2:m+1,2:n+1);
+    Dx = conv2(double(g),double(Sx),'same');
+    Dy = conv2(double(g),double(Sy),'same');
     
     Dx = reshape(Dx,[m*n 1]);
     Dy = reshape(Dy,[m*n 1]);

@@ -1,17 +1,18 @@
-function [] = displayFlowfield(u,m,n)
+function [] = displayFlowfield(w,m,n)
     
-
-    F = sqrt(u(1:m*n).^2+u(m*n+1:end).^2);
+    u = w(1:m*n);
+    v = w(m*n+1:end);
+    temp = u.^2+v.^2;
+    F = sqrt(u.^2+v.^2);
     F = reshape(F,[m n]);
-    flow_image = display.computeColor(reshape(u(1:m*n),[m n]),reshape(u(m*n+1:end),[m n]));
+    flow_image = display.computeColor(reshape(u,[m n]),reshape(v,[m n]));
     
     figure
 
-%     subplot(1,2,1)
-%     imshow(F)
-%     title('Flow vector absolute values')
-% 
-%     subplot(1,2,2)
+    imshow(F)
+    title('Flow vector absolute values')
+    
+    figure
     imshow(flow_image)
     title('Flow vector')
 end

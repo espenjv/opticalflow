@@ -79,21 +79,21 @@ This is called the Euler-Lagrange equation of variational calculus. From this re
 \label{EL}
   \begin{aligned}
 \frac{\partial M}{\partial u} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial u_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial u_y} ) = 0 \\
-\frac{\partial M}{\partial v} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial v_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial v_y} ) = 0.
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial v_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial v_y} ) = 0,
   \end{aligned}
 \end{equation}
-
+or equivalently
 
 
 
 \begin{equation}
 \label{EL_regu}
   \begin{aligned}
-\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} div(\textbf{D} \nabla u) \\
-\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} div(\textbf{D} \nabla v),
+\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} \text{div}(D \nabla u) \\
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div}(D \nabla v),
   \end{aligned}
 \end{equation}
-where \textbf{D} is a diffusion matrix steering the direction of the diffusion.
+where $D$ is a diffusion matrix steering the direction of the diffusion.
 
 
 \section{The approach by Horn and Schunck}
@@ -113,7 +113,7 @@ The smoothness term used by Horn and Schunck is the following
 \begin{align*}
 V(\nabla u, \nabla v) = |\nabla u|^2 + |\nabla v|^2.
 \end{align*}
-This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix \textbf{D} being the identity matrix. Using this function as a flow regularizer gives
+This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix $D$ being the identity matrix. Using this function as a flow regularizer gives
 \begin{align*}
 \frac{\partial V}{\partial q^i_{x_i}} = 2q^i_{x_i},
 \end{align*}
@@ -134,9 +134,10 @@ or equivalently
 
 
 \subsection{Discretizing the Horn and Schunck method}
-Let now our image be of dimension m-by-n, and let $f^i$ be the image at $t=i$. Also, we let $(x^i)_ {i \in [mn]}$ define a regular 2-dimensional grid in $\Omega$. The corresponding vector representation of the image $f$ is denoted as $\tilde{\textbf{f}}(x^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\tilde{\textbf{w}}$ is represented as the following vector in $\mathbb{R}^{2mn}$:
+\label{sec: disc}
+Let now our image be of dimension m-by-n, and let $f^i$ be the image at $t=i$. Also, we let $(x^i)_ {i \in [mn]}$ define a regular 2-dimensional grid in $\Omega$. The corresponding vector representation of the image $f$ is denoted as $\textbf{f}(x^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\textbf{w}(x^i)$ is represented as the following vector in $\mathbb{R}^{2mn}$:
 \begin{align*}
-     \tilde{\textbf{w}}=\begin{bmatrix}
+     \textbf{w}(x^i)=\begin{bmatrix}
          u(x^i)_{i\in [mn]}  \\
          v(x^i)_{i \in [mn]} \\
         \end{bmatrix}.
@@ -160,13 +161,13 @@ G_y =
 \end{tabular}
 \right] &
 \end{align*}
-were convolved with the image $f^1$ to produce the vectors $\tilde{\textbf{d}_x}(x^i)$ and $\tilde{\textbf{d}_y}(x^i)$ in $\mathbb{R}^{mn}$, approximating the image gradients of $\tilde{\textbf{f}}(x^i)$ in x- and y-direction respectively. The time derivative $\frac{\partial f}{\partial t}$ is discretized using forward difference as shown below:
+were convolved with the image $f^1$ to produce the vectors $\textbf{d}_x(x^i)$ and $\textbf{d}_y(x^i)$ in $\mathbb{R}^{mn}$, approximating the image gradients of $\textbf{f}(x^i)$ in x- and y-direction respectively. The time derivative $\frac{\partial f}{\partial t}$ is discretized using forward difference as shown below:
 \begin{align*}
-\textbf{c} = \tilde{\textbf{f}}^2(x^i) - \tilde{\textbf{f}}^1(x^i),
+\textbf{c}(x^i) = \textbf{f}^2(x^i) - \textbf{f}^1(x^i),
 \end{align*} 
 where $\textbf{c}(x^i)$ is a vector in $\mathbb{R}^{mn}$. When choosing the derivative approximations for the flow vector in (\ref{EL_HS}), the first derivative was approximated using backward difference, and the second was approximated using forward difference. The resulting system to be solved is shown below:
 \begin{align}
-(D^T D + \frac{1}{\sigma^2} L^TL) \tilde{\textbf{w}} = - D^T \textbf{c}.
+(D^T D + \frac{1}{\sigma^2} L^TL) \textbf{w} = - D^T \textbf{c}.
 \end{align}
 $D$ is the following block matrix:
 \begin{align*}
@@ -176,7 +177,7 @@ D_x & D_y
 \end{array}
 \right],
 \end{align*}
-where $D_x$ and $D_y$ are diagonal matrices in $\mathbb{R}^{mn \times mn}$ with the elements of $\tilde{\textbf{d}_x}(x^i)$ and $\tilde{\textbf{d}_y}(x^i)$ along its diagonals respectively. $L$ is the following block matrix:
+where $D_x$ and $D_y$ are diagonal matrices in $\mathbb{R}^{mn \times mn}$ with the elements of $\textbf{d}_x(x^i)$ and $\textbf{d}_y(x^i)$ along its diagonals respectively. $L$ is the following block matrix:
 \begin{align*}
 L = \left[
 \begin{array}{c|c}
@@ -209,16 +210,75 @@ L_y = \left[
 \end{align*}
 The matrix multiplication with $L$ gives a forward difference approximation, and $-L^T$ gives a backward difference approximation. The matrix product $-L^TL$ is then the discretization of the second derivative in (\ref{EL_HS}).
 
+\subsection{Results for the Horn and Schunck method}
+The results when running the Horn and Schunck algorithm on our test images shown in Figures \ref{taxi1} and \ref{taxi2} for different regularization parameters are shown in Figure \ref{reguHS}. The choice of regularization parameter depends on the application, but one often want to get rid of most of the internal structure in each object, since these points will be moving with the same velocity (when assuming no deformation of the object). One also want to have a good enough balance between segmentation and smoothing. It is seen that choosing $\sigma = 0.003$ gives a fairly good segmentation of the objects that are moving, and with almost no internal structure. The flow field with this choice of regularization parameter is shown in Figure \ref{reguHS_best} on its own. The Horn and Schunck smoothes the flow in all directions, and the flow boundaries are therefore a bit smudged. 
+
+
+\begin{figure}
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[scale=9]{taxi-00}
+\caption{First image in the Hamburg taxi sequence.}
+\label{taxi1}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\includegraphics[scale=9]{taxi-01}
+\caption{Second image in the Hamburg taxi sequence.}
+\label{taxi2}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{regularizationHS}
+    \caption{Different choices for regularization parameter $\sigma$ using the Horn and Schunck algorithm}
+    \label{reguHS}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{HSregu}
+    \caption{Flow field with $\sigma= 0.003$ using the Horn and Schunck algorithm}
+    \label{reguHS_best}
+\end{figure}
+
+
+
+
 \section{Anisotropic image-driven regularization}
-The homogeneous regularizer of Horn and Schunck smoothes the flow field in all directions. Since we are looking for a flow field describing relative movement of objects, the boundary between objects will not have a smooth flow field unless they are moving at the same relative velocity. The anisotropic reguralizer of Nagel and Enkelmann \cite{NE} performs smoothing along the image gradients and prevents smoothing across image edges. This is done by introducing a regularised projection matrix $P$, defined as
+The homogeneous regularizer of Horn and Schunck smoothes the flow field in all directions. Since we are looking for a flow field describing relative movement of objects, the boundary between objects will not have a smooth flow field unless they are moving at the same relative velocity. Methods that reduce the smoothing across image edges are called image-driven regularization methods. The anisotropic reguralizer of Nagel and Enkelmann \cite{NE} performs smoothing along the image gradients and prevents smoothing across image edges. This is done by introducing a regularised projection matrix $P$, defined as
 \begin{align*}
 P(\nabla f) = \frac{1}{|\nabla f|^2 + 2 \kappa^2} (\nabla^{\bot} f (\nabla^{\bot})^T + \kappa^2 I),
 \end{align*}
 where $\nabla^{\bot} f= \left[-\frac{\partial f}{\partial y}, \frac{\partial f}{\partial x}\right]^T$, and $\kappa > 0$ is a regularization parameter. The smoothness term of Nagel and Enkelmann can now be written as the following
 \begin{align*}
-V(\nabla u, \nabla v) = \nabla ^T u P(\nabla f) \nabla u + \nabla ^T v P(\nabla f) \nabla v,
+V_{AI}(\nabla u, \nabla v) = \nabla ^T u P(\nabla f) \nabla u + \nabla ^T v P(\nabla f) \nabla v,
 \end{align*}
 or written out 
+\begin{align*}
+V_{AI}(\nabla u, \nabla v) = \frac{\kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left( u_{\textbf{s}_1}^2 + v_{\textbf{s}_1}^2 \right) + \frac{|\nabla f|^2 + \kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left(u_{\textbf{s}_2}^2 + v_{\textbf{s}_2}^2 \right),
+\end{align*}
+where $\textbf{s}_1 = \frac{\nabla f}{|\nabla f|}$, $\textbf{s}_2 = \frac{\nabla^{\bot} f}{|\nabla f|}$ and $q_{\textbf{s}_i} = \textbf{s}_i^T \nabla u$ for $q = u, v$. That is, $q_{\textbf{s}_i}$ is the directional derivative of $q$ in the direction of the image gradient ($i=1$) or the orthogonal direction ($i=2$). This means that setting $D=P$ in (\ref{EL_regu}) steers the diffusion so that flow vectors are smoothed in the direction of the image gradients.
+
+\subsection{Discretizing the Nagel and Enkelmann smoothness term}
+Setting $D=P$ in (\ref{EL_regu}) leads to the following Euler-Lagrange system:
+\begin{align*}
+\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} \text{div}(P \nabla u) \\
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div}(P \nabla v).
+\end{align*}
+Using the same discretizations for the derivatives as in \ref{sec: disc} we get the following system:
+\begin{align*}
+(D^T D + \frac{1}{\sigma^2} L^TPL) \textbf{w} = - D^T \textbf{c}.
+\end{align*}
+
+\section{Isotropic Flow-driven regularization}
+One drawback of the image-driven approach to regularization is that there often a great deal of oversegmentation, since image boundaries are not necessarily flow boundaries. The so called flow-driven methods takes this into account, and decreases smoothing across flow edges instead of image edges. The subquadratic penaliser function of Schulman and Herv performs a nonlinear isotropic diffusion. The smoothness term can be written as
+\begin{align*}
+V_{IF}(\nabla u, \nabla v) = \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right),
+\end{align*} 
+where $\psi_V(s^2)$ is some penaliser function.
 
 \begin{thebibliography}{}
 
