@@ -1,11 +1,15 @@
 \documentclass[10pt,a4paper]{article}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{bm}
 \newcommand\bigzero{\makebox(0,0){\text{\large 0}}}
+\usepackage{graphicx}
+\usepackage[justification=centering]{subfig}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 
 \newcommand{\vectornorm}[1]{\left\|#1\right\|}
@@ -68,24 +72,21 @@ Using this result, we get the following
 \end{align*}
 but since $\eta = 0$ on the boundary $\Gamma$ we get
 \begin{align*}
-\delta J(u) &= \epsilon \iint \limits_{\Omega} \eta \left( F_u - \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy,
+\delta J(u) &= \epsilon \iint \limits_{\Omega} \eta \left( F_u - \frac{\partial}{\partial x} F_{u_x} - \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy,
 \end{align*}
 for an arbitrary function $\eta(x,y)$. If this is to hold for an arbitrary $\eta(x,y)$ we must have that 
 \begin{align*}
-F_u - \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} = 0.
+F_u - \frac{\partial}{\partial x} F_{u_x} - \frac{\partial }{\partial y} F_{u_y} = 0.
 \end{align*}
 This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional:
 \begin{equation}
 \label{EL}
   \begin{aligned}
-\frac{\partial M}{\partial u} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial u_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial u_y} ) = 0 \\
-\frac{\partial M}{\partial v} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial V}{\partial v_x} + \frac{\partial}{\partial y} \frac{\partial V}{\partial v_y} ) = 0,
+\partial_u M - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \partial_{u_x} V + \frac{\partial}{\partial y} \partial_{u_y} V) = 0 \\
+\partial_v M- \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \partial_{v_x} V + \frac{\partial}{\partial y} \partial_{v_y} V) = 0.
   \end{aligned}
 \end{equation}
-or equivalently
-
-
-
+The smoothness term will be a function of the gradient of the flow. It is convenient to write the Euler-Lagrange system in the form
 \begin{equation}
 \label{EL_regu}
   \begin{aligned}
@@ -97,7 +98,7 @@ where $D$ is a diffusion matrix steering the direction of the diffusion.
 
 
 \section{The approach by Horn and Schunck}
-The research of Horn and Shunck \cite{HS} has formed the basis of further research in the field of optical flow. They proposed the following quadratic penalised data term
+The research of Horn and Shunck (1981) has formed the basis of further research in the field of optical flow. They proposed the following quadratic penalised data term
 \begin{align}
 M(\textbf{w}) = (\nabla f \textbf{w} + \frac{\partial f}{\partial t})^2 = (\frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t})^2,
 \end{align}
@@ -239,7 +240,7 @@ The results when running the Horn and Schunck algorithm on our test images shown
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.8]{HSregu}
+    \includegraphics[scale=1]{HSregu}
     \caption{Flow field with $\sigma= 0.003$ using the Horn and Schunck algorithm}
     \label{reguHS_best}
 \end{figure}
@@ -248,7 +249,7 @@ The results when running the Horn and Schunck algorithm on our test images shown
 
 
 \section{Anisotropic image-driven regularization}
-The homogeneous regularizer of Horn and Schunck smoothes the flow field in all directions. Since we are looking for a flow field describing relative movement of objects, the boundary between objects will not have a smooth flow field unless they are moving at the same relative velocity. Methods that reduce the smoothing across image edges are called image-driven regularization methods. The anisotropic reguralizer of Nagel and Enkelmann \cite{NE} performs smoothing along the image gradients and prevents smoothing across image edges. This is done by introducing a regularised projection matrix $P$, defined as
+The homogeneous regularizer of Horn and Schunck smoothes the flow field in all directions. Since we are looking for a flow field describing relative movement of objects, the boundary between objects will not have a smooth flow field unless they are moving at the same relative velocity. Methods that reduce the smoothing across image edges are called image-driven regularization methods. The anisotropic reguralizer of Nagel and Enkelmann (1986) performs smoothing along the image gradients and prevents smoothing across image edges. This is done by introducing a regularised projection matrix $P$, defined as
 \begin{align*}
 P(\nabla f) = \frac{1}{|\nabla f|^2 + 2 \kappa^2} (\nabla^{\bot} f (\nabla^{\bot})^T + \kappa^2 I),
 \end{align*}
@@ -273,14 +274,61 @@ Using the same discretizations for the derivatives as in \ref{sec: disc} we get 
 (D^T D + \frac{1}{\sigma^2} L^TPL) \textbf{w} = - D^T \textbf{c}.
 \end{align*}
 
+\subsection{Results for the anisotropic image-driven regularization}
+Experiments were run to find the best regularization parameter in the Nagel and Enkelmann smoothness term. The regularization parameter $\sigma$ found for the Horn and Schunck method is used to regularize the whole smoothness term. The resulting flow field for different choices of the regularization parameter $\kappa$, while keeping $\sigma$ constant, is shown in Figure (\ref{reguNE}). It is seen that choosing $\kappa = 0.8$ gives a fairly good segmentation of the object. Since the values for the gradient from the sobel derivative are relatively high, it is expected to also having to choose a relatively large value for $\kappa$ for sufficient regularization. Figure (\ref{reguNEHS}) compares the anisotropic smoothness term of Nagel and Enkelmann with $\kappa = 0.8$ with the homogeneous smoothness term of Horn and Schunck, both with using regularization parameter $\sigma = 0.003$. 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{regularizationNE.eps}
+    \caption{Different choices for $\kappa$ using the Nagel and Enkelmann smoothness term}
+    \label{reguNE}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{NEregu}
+    \caption{Flow field with $\kappa= 0.8$ and $\sigma = 0.003$ using the Nagel and Enkelmann smoothness term.}
+    \label{reguNE_best}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{reguNEHS.eps}
+    \subfloat[\label{NE_best} Anisotropic smoothness term.]{\hspace{.5\linewidth}}
+	\subfloat[\label{HS_best} Homogeneous smoothness term.]{\hspace{.5\linewidth}}
+	\caption{Comparison of the anisotropic and homogeneous smoothness term for given parameter choices.\label{humans}}
+    \label{reguNEHS}
+\end{figure}
+
 \section{Isotropic Flow-driven regularization}
-One drawback of the image-driven approach to regularization is that there often a great deal of oversegmentation, since image boundaries are not necessarily flow boundaries. The so called flow-driven methods takes this into account, and decreases smoothing across flow edges instead of image edges. The subquadratic penaliser function of Schulman and Herv performs a nonlinear isotropic diffusion. The smoothness term can be written as
+One drawback of the image-driven approach to regularization is that there is often a great deal of oversegmentation, since image boundaries are not necessarily flow boundaries. The so called flow-driven methods takes this into account, and decreases smoothing across flow edges instead of image edges. The subquadratic penaliser function of Schulman and Herv (1989) performs a nonlinear isotropic diffusion. The smoothness term can be written as
 \begin{align*}
 V_{IF}(\nabla u, \nabla v) = \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right),
 \end{align*} 
-where $\psi_V(s^2)$ is some penaliser function.
+where $\psi_V(s^2)$ is some penaliser function. The contribution to (\ref{EL}) is $\nabla \cdot (\partial_{u_x} V, \partial_{u_y} V)$. Computing the individual components, we get
+\begin{align*}
+\partial_{u_x} V = 2 \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) u_x \\
+\partial_{u_y} V = 2 \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) u_y,
+\end{align*}
+and equivalent for $(\partial_{v_x} V, \partial_{v_y} V)$. Thus the diffusion matrix of (\ref{EL_regu}) is given as
+\begin{align*}
+D_{IF} = 2 \psi_V'\left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) I,
+\end{align*}
+where $I$ is the identity matrix. As a convex penaliser, Cohen (1993) suggested the following function
+\begin{align*}
+\psi_V(s^2) = \sqrt{s^2 + \epsilon^2},
+\end{align*} 
+which gives
+\begin{align*}
+\psi_V'(s^2) = \frac{1}{2 \sqrt{s^2 + \epsilon^2}}.
+\end{align*}
+
+
 
 \begin{thebibliography}{}
+
+\bibitem{Cohen}
+Cohen, I. (1993). Nonlinear variational method for optical flow computation. \emph{Proceedings. Eighth Scandinavian conference on Image Analysis} (Vol. 1, pp. 523–530). Norway, Tromsø.
 
 \bibitem{CH}
 Courant, R. and Hilbert, D. (1953). Methods of Mathematical Physics. Vol. I (First English ed.), Interscience Publishers, New York
@@ -294,6 +342,9 @@ Horn, B. and Schunck, B. (1981). Determining optical flow. \emph{Artificial Inte
 
 \bibitem{NE}
 Nagel, H. and Enkelmann, W. (1986). An investigation of smoothness constraints for the estimation of displacement vector fields from image sequences. \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 8, 565-593
+
+\bibitem{SH}
+Shulman, D. and Hervé, J. (1989). Regularization of discontinuous flow fields. \emph{Proceedings. Workshop on Visual Motion} (pp. 81–86). Irvine: IEEE Computer Society Press.
 
 \bibitem{OFH}
 Zimmer, H., Bruhn, A., Weickert, J. (2011). Optic Flow in Harmony \emph{International Journal of Computer Vision}, 93, 368-388

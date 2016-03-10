@@ -32,16 +32,27 @@ end
 
 [m,n] = size(g1);
 
-reg = 0.007;
+reg = 0.003;
 flow_col = cell(4,1);
-kappa_vec = [1, 0.8,0.6,0.5];
+kappa_vec = [1, 0.8,0.5,0.2];
 figure
-title('NE for chosen alpha parameter and different kappa')
 for i = 1:4
     u = findFlow(g1,g2,method,gradient,reg,kappa_vec(i));
     flow = display.computeColor(reshape(u(1:m*n),[m n]),reshape(u(m*n+1:end),[m n]));
     subplot(2,2,i)
     imshow(flow)
-    title(['k = ', num2str(kappa_vec(i))])
+    title(['\kappa = ', num2str(kappa_vec(i))])
 end
+suptitle('Flow field for  \kappa')
 
+figure
+u = findFlow(g1,g2,method,gradient,reg,0.8);
+flow = display.computeColor(reshape(u(1:m*n),[m n]),reshape(u(m*n+1:end),[m n]));
+subplot(1,2,1)
+imshow(flow)
+title(['NE: \kappa = ', num2str(0.8), ', \sigma =', num2str(reg)])
+u = findFlow(g1,g2,'HS',gradient,reg);
+flow = display.computeColor(reshape(u(1:m*n),[m n]),reshape(u(m*n+1:end),[m n]));
+subplot(1,2,2)
+imshow(flow)
+title(['HS: \sigma = ', num2str(reg)])

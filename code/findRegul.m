@@ -44,14 +44,12 @@ for i = 1:4
     imshow(flow)
     title(['\sigma = ', num2str(reg_vec(i))])
 end
-
 suptitle('HS for different regularization parameters');
+
 
 figure
 u = findFlow(g1,g2,method,gradient,0.003);
 flow = display.computeColor(reshape(u(1:m*n),[m n]),reshape(u(m*n+1:end),[m n]));
 imshow(flow)
 title(['Flow field with \sigma = ', num2str(0.003)])
-
-
 
