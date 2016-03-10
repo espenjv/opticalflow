@@ -6,12 +6,12 @@ function [] = displayFlowfield(w,m,n)
     F = sqrt(u.^2+v.^2);
     F = reshape(F,[m n]);
     flow_image = display.computeColor(reshape(u,[m n]),reshape(v,[m n]));
-    
-    figure
-
-    imshow(F)
-    title('Flow vector absolute values')
-    
+%     
+%     figure
+% 
+%     imshow(F)
+%     title('Flow vector absolute values')
+%     
     figure
     imshow(flow_image)
     title('Flow vector')

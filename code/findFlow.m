@@ -1,4 +1,4 @@
-function u = findFlow(g1,g2,method,gradient,regu,kappa)
+function w = findFlow(g1,g2,method,gradient,regu,kappa)
 
     if nargin < 6
         kappa = 0.01;
@@ -27,15 +27,18 @@ function u = findFlow(g1,g2,method,gradient,regu,kappa)
         % Uses the method of Horn and Schunck
         M = D'*D;
         V = smoothnessHS(m,n);
+        G = M + regu^(-2)*V;
+        w = G\(-D'*c);
     elseif strcmp(method,'NE')
         % Uses the method of Nagel and Enkelmann
         M = D'*D;
         V = smoothnessNE(Dx,Dy,m,n,kappa);
+        G = M + regu^(-2)*V;
+        w = G\(-D'*c);
     elseif strcmp(method,'SH')
-        u = flowdrivenSH(Dx,Dy,c,m,n,param,'cohen');
+        param = 1;
+        w = flowdrivenSH(Dx,Dy,c,m,n,param,'cohen');
     end
 
 
-    G = M + regu^(-2)*V;
-    u = G\(-D'*c);
 end

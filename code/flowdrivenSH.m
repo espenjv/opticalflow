@@ -2,7 +2,7 @@ function u = flowdrivenSH(Dx,Dy,c,m,n,param,penal)
 %flowdrivenSH Computes flow using the method of Shulman and Herv
 %   Flow driven regularization with and subquadratic penaliser function for
 %   the smoothness term (convex)
-    regu = 0.007;
+    regu = 0.002;
 
     D = sparse(1:m*n,1:m*n,Dx,m*n,2*m*n);
     D(:,m*n+1:2*m*n) = sparse(1:m*n,1:m*n,Dy,m*n,m*n);

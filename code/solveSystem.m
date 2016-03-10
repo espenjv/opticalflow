@@ -2,7 +2,7 @@ close all
 clear all
 
 
-method = 'HS';
+method = 'SH';
 image_set = 'taxi';
 load_set = 0;
 gradient = 'sobel';
@@ -43,7 +43,7 @@ elseif strcmp(gradient,'forward')
     Dx = forwardDifferenceImage(g);
     Dy = forwardDifferenceImage(g');
 elseif strcmp(gradient,'backward')
-    Dx = backwardDifferenceImage(g);
+    Dx = backwardDiffer15enceImage(g);
     Dy = backwardDifferenceImage(g');
 end
 
@@ -73,10 +73,10 @@ elseif strcmp(method,'NE')
     G = M + regu^(-2)*V;
     u = G\(-D'*c);
 elseif strcmp(method,'SH')
-    param = 0.1;
+    param = 0.3;
     c = timeDisc(g1,g2);
     c = reshape(c,[m*n 1]);
-    u = flowdrivenSH(Dx,Dy,c,m,n,param,'PM');
+    w = flowdrivenSH(Dx,Dy,c,m,n,param,'cohen');
 end
 display.displayImages(g1,g2)
 
