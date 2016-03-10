@@ -1,6 +1,7 @@
 import computeColor as cc
 import HS_method as HS
 import NE_method as NE
+import flowdriven_convex as FDC
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -9,7 +10,7 @@ from scipy.sparse.linalg import spsolve
 import math
 
 
-method = 'HS'
+method = 'SH'
 
 regu = 0.003
 
@@ -26,13 +27,18 @@ D = HS.makeDmatrix(g1)
 M = (D.T).dot(D);
 if method is 'HS':
     V = HS.smoothnessHS(m,n)
+    G = M + math.pow(regu,-2)*V
+    b = sparse.csr_matrix(-(D.T).dot(c))
+    w = spsolve(G,b)
 elif method is 'NE':
     kappa = 1
     V = NE.smoothnessNE(m,n,kappa)
+    G = M + math.pow(regu,-2)*V
+    b = sparse.csr_matrix(-(D.T).dot(c))
+    w = spsolve(G,b)
+elif method is 'SH':
+    w = FDC.findFlow(g1,c,regu)
 
-G = M + math.pow(regu,-2)*V
-b = sparse.csr_matrix(-(D.T).dot(c))
-w = spsolve(G,b)
 
 u = w[0:m*n]
 v = w[m*n:2*m*n]
