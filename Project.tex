@@ -7,6 +7,7 @@
 \usepackage{bm}
 \newcommand\bigzero{\makebox(0,0){\text{\large 0}}}
 \usepackage{graphicx}
+\usepackage{epstopdf} 
 \usepackage[justification=centering]{subfig}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -82,16 +83,16 @@ This is called the Euler-Lagrange equation of variational calculus. From this re
 \begin{equation}
 \label{EL}
   \begin{aligned}
-\partial_u M - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \partial_{u_x} V + \frac{\partial}{\partial y} \partial_{u_y} V) = 0 \\
-\partial_v M- \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \partial_{v_x} V + \frac{\partial}{\partial y} \partial_{v_y} V) = 0.
+\partial_u M - \frac{1}{\sigma^2}\left( \frac{\partial}{\partial x} \partial_{u_x} V + \frac{\partial}{\partial y} \partial_{u_y} V \right) = 0 \\
+\partial_v M- \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x} \partial_{v_x} V + \frac{\partial}{\partial y} \partial_{v_y} V \right) = 0.
   \end{aligned}
 \end{equation}
 The smoothness term will be a function of the gradient of the flow. It is convenient to write the Euler-Lagrange system in the form
 \begin{equation}
 \label{EL_regu}
   \begin{aligned}
-\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} \text{div}(D \nabla u) \\
-\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div}(D \nabla v),
+\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} \text{div} \left(D \nabla u \right) \\
+\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div} \left(D \nabla v \right),
   \end{aligned}
 \end{equation}
 where $D$ is a diffusion matrix steering the direction of the diffusion.
@@ -303,7 +304,8 @@ Experiments were run to find the best regularization parameter in the Nagel and 
 \section{Isotropic Flow-driven regularization}
 One drawback of the image-driven approach to regularization is that there is often a great deal of oversegmentation, since image boundaries are not necessarily flow boundaries. The so called flow-driven methods takes this into account, and decreases smoothing across flow edges instead of image edges. The subquadratic penaliser function of Schulman and Herv (1989) performs a nonlinear isotropic diffusion. The smoothness term can be written as
 \begin{align*}
-V_{IF}(\nabla u, \nabla v) = \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right),
+V_{IF}(\nabla u, \nabla v) &= \psi_V \left( |\nabla u|^2 + |\nabla v|^2 \right) \\ 
+&= \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right),
 \end{align*} 
 where $\psi_V(s^2)$ is some penaliser function. The contribution to (\ref{EL}) is $\nabla \cdot (\partial_{u_x} V, \partial_{u_y} V)$. Computing the individual components, we get
 \begin{align*}
@@ -314,7 +316,7 @@ and equivalent for $(\partial_{v_x} V, \partial_{v_y} V)$. Thus the diffusion ma
 \begin{align*}
 D_{IF} = 2 \psi_V'\left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) I,
 \end{align*}
-where $I$ is the identity matrix. As a convex penaliser, Cohen (1993) suggested the following function
+where $I$ is the identity matrix. As a convex penaliser, Cohen (1993) suggested the following total variation regulariser:
 \begin{align*}
 \psi_V(s^2) = \sqrt{s^2 + \epsilon^2},
 \end{align*} 
@@ -322,10 +324,29 @@ which gives
 \begin{align*}
 \psi_V'(s^2) = \frac{1}{2 \sqrt{s^2 + \epsilon^2}}.
 \end{align*}
+This penaliser function results in the following Euler-Lagrange system
+\begin{equation}
+\begin{aligned}
+\label{EL_LD}
+\partial_u M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{u_x}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{u_y}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] \right) = 0 \\
+\partial_v M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{v_x}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{v_y}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] \right) = 0,
+\end{aligned}
+\end{equation}
+which is clearly a non-linear system.
 
+\subsection{The Lagged Diffusivity Fixed Point Method}
+The non-linear system (\ref{EL_LD}) can be solved using the method of lagged diffusivity, which is a fixed point scheme that can be traced back to Weiszfeld's method of minimizing Euclidean lengths, and for which global and linear convergence can be proven (Chan et. al. 1999). From (\ref{EL_LD}) we can define the fixed point method as
+\begin{align*}
+\partial_{u^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{u^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{u^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) = 0 \\
+\partial_{v^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{v^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{v^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) = 0,
+\end{align*}
+where we solve for $u^{k+1}$ and $v^{k+1}$ given $u^k$ and $v^k$ from the previous iteration.
 
 
 \begin{thebibliography}{}
+
+\bibitem{Chan}
+Chan, T. and Mulet, P. (1999) On the convergence of the lagged diffusivity fixed point method in total variation image restoration. \emph{SIAM Journal of Numerical Analysis} (Vol. 36, No. 2, pp 354-367)
 
 \bibitem{Cohen}
 Cohen, I. (1993). Nonlinear variational method for optical flow computation. \emph{Proceedings. Eighth Scandinavian conference on Image Analysis} (Vol. 1, pp. 523–530). Norway, Tromsø.
