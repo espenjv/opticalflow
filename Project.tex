@@ -53,33 +53,31 @@ To combine the two constraints into one term we form a global energy function co
 \begin{align}
 E(u,v) = \frac{1}{2} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) \, dx dy,
 \end{align}
-where $\sigma > 0$ is a regularization parameter. The problem is now to find the minimum of the energy functional $E(u,v)$. From calculus of variations we have that if $u$ minimizes a functional $J(u) = \iint \limits_\Omega F(x,y,u,u_x,u_y) \, dxdy$ then the first variation must be zero:
+where $\sigma > 0$ is a regularization parameter. The problem is now to find the minimum of the energy functional $E(u,v)$. From calculus of variations we have that if $u$ minimizes a functional $J(\textbf{w}) = \iint \limits_\Omega F(x,y,\textbf{w},\textbf{w}_x,\textbf{w}_y) \, dxdy$ then the first variation must be zero:
 \begin{align*}
-\delta J(u) = \epsilon \frac{d}{d \epsilon} \left[ J(u + \epsilon \eta) \right] = 0 
+\delta J(\textbf{w}) = \epsilon \frac{d}{d \epsilon} \left[ J(\textbf{w} + \epsilon \bm{\eta}) \right] = 0 
 \end{align*}
-for an arbitrary function $\eta(x,y)$ assumed to vanish on the boundary. We get
+for an arbitrary function $\bm{\eta}(x,y)$. We get
 \begin{align*}
-\delta J(u) =& \epsilon \iint \limits_{\Omega} \frac{d}{d \epsilon} F(x,y,u + \epsilon \eta, u_x + \epsilon \eta_x, u_y + \epsilon \eta_y) \, dxdy \\
-=& \epsilon \iint \limits_{\Omega} \eta F_u + \eta_x F_{u_x} + \eta_y F_{u_y} \, dxdy \\
-=& \epsilon \iint \limits_{\Omega} \eta F_u + \frac{\partial}{\partial x} (\eta F_{u_x}) + \frac{\partial }{\partial y} (\eta F_{u_y}) - \eta \left( \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy
+\delta J(\textbf{w}) =& \epsilon \iint \limits_{\Omega} \frac{d}{d \epsilon} F(x,y,\textbf{w} + \epsilon \bm{\eta}, \textbf{w}_x + \epsilon \bm{\eta}_x, \textbf{w}_y + \epsilon \bm{\eta}_y) \, dxdy \\
+=& \epsilon \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \bm{\eta}_x F_{\textbf{w}_x} + \bm{\eta}_y F_{\textbf{w}_y} \, dxdy \\
+=& \epsilon \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) - \bm{\eta} \left( \frac{d}{d x} F_{\textbf{w}_x} + \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy
 \end{align*}
-Gauss' Theorem says that for continuous functions $f(x,y)$ and $g(x,y)$, and a piecewise smooth boundary $\Gamma$ we have that 
+Now let $\Gamma_{e}$, $\Gamma_{w}$, $\Gamma_{n}$ and $\Gamma_{s}$ be the east, west, north and south boundary of our domain respectively. Then using Gauss' Theorem gives the following(Rectangle east and west boundary, not general)
 \begin{align*}
-\iint \limits_\Omega f_x(x,y) + g_y(x,y) \, dx dy = \int_\Gamma f(x,y) \, dy - g(x,y) \, dx. 
+&\epsilon \iint \limits_{\Omega}  \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) \, dxdy = \\ &\int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy
 \end{align*}
 Using this result, we get the following
 \begin{align*}
-\delta J(u) &= \epsilon \iint \limits_{\Omega} \eta F_u - \eta \left( \frac{\partial}{\partial x} F_{u_x} + \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy + \epsilon \int_\Gamma \eta (F_{u_x} \, dy - F_{u_y} \, dx),
+&\delta J(\textbf{w}) = \epsilon \iint \limits_{\Omega} \bm{\eta} \left( F_\textbf{w} -  \frac{d}{d x} F_{\textbf{w}_x} - \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy + \\ &\epsilon \left( \int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy \right).
 \end{align*}
-but since $\eta = 0$ on the boundary $\Gamma$ we get
+When $J = 0$, and letting $\eta(x,y)$ be an arbitrary funtion, it follows that
 \begin{align*}
-\delta J(u) &= \epsilon \iint \limits_{\Omega} \eta \left( F_u - \frac{\partial}{\partial x} F_{u_x} - \frac{\partial }{\partial y} F_{u_y} \right) \, dxdy,
+F_u - \frac{\partial}{\partial x} F_{u_x} - \frac{\partial }{\partial y} F_{u_y} &= 0 \quad \text{in} \ \Omega \\
+F_{\textbf{w}_x} &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w \\
+F_{\textbf{w}_y}& = 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s
 \end{align*}
-for an arbitrary function $\eta(x,y)$. If this is to hold for an arbitrary $\eta(x,y)$ we must have that 
-\begin{align*}
-F_u - \frac{\partial}{\partial x} F_{u_x} - \frac{\partial }{\partial y} F_{u_y} = 0.
-\end{align*}
-This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional:
+This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional (+ Boundary):
 \begin{equation}
 \label{EL}
   \begin{aligned}
@@ -95,7 +93,7 @@ The smoothness term will be a function of the gradient of the flow. It is conven
 \frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div} \left(D \nabla v \right),
   \end{aligned}
 \end{equation}
-where $D$ is a diffusion matrix steering the direction of the diffusion.
+where $D$ is a diffusion matrix steering the direction of the diffusion. (what is D?)
 
 
 \section{The approach by Horn and Schunck}
