@@ -7,9 +7,17 @@ from scipy.sparse.linalg import spsolve
 import math
 
 def findFlow(g,c,regu):
-    eps = 0.8
+    # Computes the flow using lagged diffusivity
+    # Parameters: g: image
+    #             c: time discretization
+    #            regu: global scale regularization
+    # Returns     w: flow vector
+
+    # Regularization parameter in the convex penaliser
+    eps = 0.001
     [m,n] = g.shape
 
+    # D, L and Model term
     D = HS.makeDmatrix(g)
     L = HS.makeLmatrix(m,n)
     M = (D.T).dot(D)
@@ -19,23 +27,44 @@ def findFlow(g,c,regu):
     b = sparse.csr_matrix(-(D.T).dot(c))
 
     w = np.zeros(2*m*n)
+    # Flow derivatives
+    grad_w = L.dot(w)
+    # Derivatives of the components
+    u_x = grad_w[0:m*n]
+    u_y = grad_w[m*n:2*m*n]
+    v_x = grad_w[2*m*n:3*m*n]
+    v_y = grad_w[3*m*n:4*m*n]
 
-
-    psi_deriv = sparse.diags(np.divide(np.ones(m*n),(np.sqrt(I.dot(np.power(L.dot(w),2))+math.pow(eps,2)))),0)
+    # Convex penaliser
+    psi_deriv = sparse.diags(np.divide(np.ones(m*n),(np.sqrt(np.power(u_x,2) + np.power(u_y,2) + np.power(v_x,2) + np.power(v_y,2)+math.pow(eps,2)))),0)
+    # Div(Dif grad(w))
     V = ((L.T).dot(sparse.kron(sparse.eye(4),psi_deriv,format = 'csr'))).dot(L)
 
     del_w = 1
 
-
-    while np.max(del_w) > math.pow(10,-2):
+    iter_max = 40
+    iter_nr = 0
+    print np.max(del_w)
+    while np.max(del_w) > math.pow(10,-4) and iter_nr < iter_max:
+        print iter_nr
+        iter_nr += 1
         G = M + math.pow(regu,-2)*V
         w_new = spsolve(G,b)
+        grad_w = L.dot(w_new)
 
-        psi_deriv = sparse.diags(np.divide(np.ones(m*n),(np.sqrt(I.dot(np.power(L.dot(w_new),2))+math.pow(eps,2)))),0)
+        u_x = grad_w[0:m*n]
+        u_y = grad_w[m*n:2*m*n]
+        v_x = grad_w[2*m*n:3*m*n]
+        v_y = grad_w[3*m*n:4*m*n]
+
+
+        psi_deriv = sparse.diags(np.divide(np.ones(m*n),(np.sqrt(np.power(u_x,2) + np.power(u_y,2) + np.power(v_x,2) + np.power(v_y,2)+math.pow(eps,2)))),0)
         V = ((L.T).dot(sparse.kron(sparse.eye(4),psi_deriv,format = 'csr'))).dot(L)
 
         del_w = abs(w_new - w)
 
         w = w_new
+
+    print iter_nr
 
     return w

@@ -11,11 +11,12 @@ from scipy.sparse.linalg import spsolve
 import math
 
 
-method = 'ID'
-savefigure = 0 # To save figure displayfigure must be TRUE
+method = 'FD'
+savefigure = 1 # To save figure displayfigure must be TRUE
 displayfigure = 1
 
-regu = 0.003
+# Global scale regularization
+regu = 0.03
 
 image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
 
@@ -27,23 +28,39 @@ g2 = np.array(g2, dtype=np.double)
 
 
 [m,n] = g1.shape
+# Time discretization: Forward difference, time step = 1
 c = np.subtract(np.reshape(g2.T,[1,m*n])[0],np.reshape(g1.T,[1,m*n])[0])
+# D-matrix from model term
 D = HS.makeDmatrix(g1)
+# Model term
 M = (D.T).dot(D);
 if method is 'HS':
+    # Using Horn and Schunck method
+    # Smoothness term
     V = HS.smoothnessHS(m,n)
+    # Model + smoothness
     G = M + math.pow(regu,-2)*V
+    # RHS
     b = sparse.csr_matrix(-(D.T).dot(c))
+    # Flow vector
     w = spsolve(G,b)
 elif method is 'ID':
+    # Using Nagel and Enkelmann image driven method
+    # Regularization parameter
     kappa = 1
+    # Smoothness term
     V = NE.smoothnessNE(g1,kappa)
+    # Model + smoothness
     G = M + math.pow(regu,-2)*V
+    # RHS
     b = sparse.csr_matrix(-(D.T).dot(c))
+    # Flow vector
     w = spsolve(G,b)
 elif method is 'FD':
+    # Flow driven with convex penaliser
     w = FDC.findFlow(g1,c,regu)
 elif method is 'IFD':
+    # Image flow driven with convex penaliser
     w = IF.findFlow(g1,c,regu)
 
 
@@ -56,7 +73,7 @@ if displayfigure:
 
     plt.figure()
     plt.imshow(flow_image)
-    plt.title('Method: ' + method)
-    plt.show()
+    plt.title('Method: ' + method +' regu: ' + str(regu))
     if savefigure:
-        plt.savefig(method +'.png',bbox_inches = 'tight')
+        plt.savefig(method + str(regu) + '.png',bbox_inches = 'tight')
+    plt.show()
