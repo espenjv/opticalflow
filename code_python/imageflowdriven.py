@@ -59,7 +59,7 @@ def findFlow(g,c,regu):
     L = HS.makeLmatrix(m,n)
     M = (D.T).dot(D)
     # RHS
-    b = sparse.csr_matrix(-(D.T).dot(c))
+    b = -(D.T).dot(c)
     # Initial flow values
     w = np.zeros(2*m*n)
 
@@ -74,7 +74,7 @@ def findFlow(g,c,regu):
 
     del_w = 1
     iter_nr = 0
-    iter_max = 40
+    iter_max = 20
     # Lagged Diffusivity iteration:
     while np.max(del_w) > math.pow(10,-4) and iter_nr <iter_max:
         print iter_nr

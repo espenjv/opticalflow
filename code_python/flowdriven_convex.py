@@ -24,7 +24,7 @@ def findFlow(g,c,regu):
 
     I = sparse.eye(m*n)
     I = sparse.hstack((I,I,I,I))
-    b = sparse.csr_matrix(-(D.T).dot(c))
+    b = -(D.T).dot(c)
 
     w = np.zeros(2*m*n)
     # Flow derivatives
@@ -42,7 +42,7 @@ def findFlow(g,c,regu):
 
     del_w = 1
 
-    iter_max = 40
+    iter_max = 20
     iter_nr = 0
     print np.max(del_w)
     while np.max(del_w) > math.pow(10,-4) and iter_nr < iter_max:

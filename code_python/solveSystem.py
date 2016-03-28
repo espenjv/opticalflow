@@ -12,13 +12,13 @@ import math
 
 
 method = 'FD'
-savefigure = 1 # To save figure displayfigure must be TRUE
+savefigure = 0 # To save figure displayfigure must be TRUE
 displayfigure = 1
 
 # Global scale regularization
 regu = 0.03
-
-image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
+image_dir = 'C:/Users/Espen/opticalflow/HamburgTaxi/'
+#image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
 
 g1 = misc.imread(image_dir+'taxi-00.tif')
 g2 = misc.imread(image_dir+'taxi-01.tif')
@@ -37,13 +37,13 @@ M = (D.T).dot(D);
 if method is 'HS':
     # Using Horn and Schunck method
     # Smoothness term
-    V = HS.smoothnessHS(m,n)
+	V = HS.smoothnessHS(m,n)
     # Model + smoothness
-    G = M + math.pow(regu,-2)*V
+	G = M + math.pow(regu,-2)*V
     # RHS
-    b = sparse.csr_matrix(-(D.T).dot(c))
+	b = -(D.T).dot(c)
     # Flow vector
-    w = spsolve(G,b)
+	w = spsolve(G,b)
 elif method is 'ID':
     # Using Nagel and Enkelmann image driven method
     # Regularization parameter
@@ -53,7 +53,7 @@ elif method is 'ID':
     # Model + smoothness
     G = M + math.pow(regu,-2)*V
     # RHS
-    b = sparse.csr_matrix(-(D.T).dot(c))
+    b = -(D.T).dot(c)
     # Flow vector
     w = spsolve(G,b)
 elif method is 'FD':

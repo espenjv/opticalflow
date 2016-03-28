@@ -63,7 +63,7 @@ for an arbitrary function $\bm{\eta}(x,y)$. We get
 =& \epsilon \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \bm{\eta}_x F_{\textbf{w}_x} + \bm{\eta}_y F_{\textbf{w}_y} \, dxdy \\
 =& \epsilon \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) - \bm{\eta} \left( \frac{d}{d x} F_{\textbf{w}_x} + \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy
 \end{align*}
-Now let $\Gamma_{e}$, $\Gamma_{w}$, $\Gamma_{n}$ and $\Gamma_{s}$ be the east, west, north and south boundary of our domain respectively. Then using Gauss' Theorem gives the following(Rectangle east and west boundary, not general)
+Now let $\Gamma_{e}$, $\Gamma_{w}$, $\Gamma_{n}$ and $\Gamma_{s}$ be the east, west, north and south boundary of our domain respectively. Then using Gauss' Theorem gives the following
 \begin{align*}
 &\epsilon \iint \limits_{\Omega}  \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) \, dxdy = \\ &\int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy
 \end{align*}
@@ -73,27 +73,27 @@ Using this result, we get the following
 \end{align*}
 When $J = 0$, and letting $\eta(x,y)$ be an arbitrary funtion, it follows that
 \begin{align*}
-F_u - \frac{\partial}{\partial x} F_{u_x} - \frac{\partial }{\partial y} F_{u_y} &= 0 \quad \text{in} \ \Omega \\
+F_{\textbf{w}} - \frac{\partial}{\partial x} F_{\textbf{w}_x} - \frac{\partial }{\partial y} F_{\textbf{w}_y} &= 0 \quad \text{in} \ \Omega \\
 F_{\textbf{w}_x} &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w \\
 F_{\textbf{w}_y}& = 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s
 \end{align*}
-This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional (+ Boundary):
+This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional:
 \begin{equation}
 \label{EL}
   \begin{aligned}
-\partial_u M - \frac{1}{\sigma^2}\left( \frac{\partial}{\partial x} \partial_{u_x} V + \frac{\partial}{\partial y} \partial_{u_y} V \right) = 0 \\
-\partial_v M- \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x} \partial_{v_x} V + \frac{\partial}{\partial y} \partial_{v_y} V \right) = 0.
+\partial_{\textbf{w}} M - \frac{1}{\sigma^2}\left( \frac{\partial}{\partial x} \partial_{\textbf{w}_x} V + \frac{\partial}{\partial y} \partial_{\textbf{w}_y} V \right) &= 0 \quad \text{in} \ \Omega  \\
+\partial_{\textbf{w}_x} V &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w \\
+\partial_{\textbf{w}_y} V &= 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s
   \end{aligned}
 \end{equation}
-The smoothness term will be a function of the gradient of the flow. It is convenient to write the Euler-Lagrange system in the form
+The smoothness term will be a function of the gradient of the flow. It is convenient to write the first equation in the Euler-Lagrange system in the form
 \begin{equation}
 \label{EL_regu}
   \begin{aligned}
-\frac{\partial M}{\partial u} - \frac{1}{\sigma^2} \text{div} \left(D \nabla u \right) \\
-\frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div} \left(D \nabla v \right),
-  \end{aligned}
+\partial_q M - \frac{1}{\sigma^2} \text{div} \left(\Theta \nabla q \right) = 0 \\
+	\end{aligned}
 \end{equation}
-where $D$ is a diffusion matrix steering the direction of the diffusion. (what is D?)
+for $q \in u, v$ where $\Theta$ is a diffusion matrix steering the direction of the diffusion, and can be both dependent or independent of the gradient itself.
 
 
 \section{The approach by Horn and Schunck}
@@ -113,23 +113,21 @@ The smoothness term used by Horn and Schunck is the following
 \begin{align*}
 V(\nabla u, \nabla v) = |\nabla u|^2 + |\nabla v|^2.
 \end{align*}
-This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix $D$ being the identity matrix. Using this function as a flow regularizer gives
+This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix $\Theta$ being the identity matrix. Using this function as a flow regularizer gives
 \begin{align*}
-\frac{\partial V}{\partial q^i_{x_i}} = 2q^i_{x_i},
+\frac{\partial V}{\partial q_{x_i}} = 2q_{x_i},
 \end{align*}
-for $q^i = u,v$ and $x_i = x, y$. Dividing by the factor of 2 in all terms results in (\ref{EL}) taking the form 
+for $q \in u,v$ and $x_i = x, y$. Dividing by the factor of 2 in all terms results in (\ref{EL}) taking the form 
 \begin{equation}
 \label{EL_HS}
 \begin{aligned}
-(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial u}{\partial x} + \frac{\partial}{\partial y} \frac{\partial u}{\partial y} ) = 0 \\
-(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial v}{\partial x} + \frac{\partial}{\partial y} \frac{\partial v}{\partial y} ) = 0 \\
+(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial u}{\partial x} + \frac{\partial}{\partial y} \frac{\partial u}{\partial y} ) &= 0  \quad \text{in} \ \Omega,  \\
+(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y} - \frac{1}{\sigma^2}(\frac{\partial}{\partial x} \frac{\partial v}{\partial x} + \frac{\partial}{\partial y} \frac{\partial v}{\partial y} ) &= 0  \quad \text{in} \ \Omega  \\
+& \text{and} \\
+\textbf{w}_{x} &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w, \\
+\textbf{w}_{y} &= 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s.
 \end{aligned}
 \end{equation}
-or equivalently
-\begin{align*}
-(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial x} - \frac{1}{\sigma^2}(\frac{\partial^2}{\partial x^2} +  \frac{\partial^2}{\partial y^2} ) u = 0 \\
-(\frac{\partial f}{\partial x}u + \frac{\partial f}{\partial y}v + \frac{\partial f}{\partial t}) \frac{\partial f}{\partial y} - \frac{1}{\sigma^2}(\frac{\partial^2}{\partial x^2} +  \frac{\partial^2}{\partial y^2}) v = 0 \\
-\end{align*}
 
 
 
@@ -191,10 +189,10 @@ L_y & 0_{mn,mn} \\
 $Lx \in \mathbb{R}^{mn \times mn}$ being the following mn-by-mn block diagonal matrix:
 \begin{align*}
 L_x = \left[
-\begin{array}{c|c|c|c}
-I_{m,m} & -I_{m,m} & 0 & \cdots \\ \hline
-0 & \ddots & \ddots & 0 \\ \hline
-0 & 0 & I_{m,m} & -I_{m,m} \\
+\begin{array}{c|c|c|c|c}
+I_{m} & -I_{m} & 0 & \cdots & 0 \\ \hline
+0 & 0 & I_{m} & -I_{m} & 0 \\ \hline
+0 & 0 & 0 & \ddots & \ddots \\ \hline
 \end{array}
 \right],
 \end{align*}
@@ -263,7 +261,7 @@ V_{AI}(\nabla u, \nabla v) = \frac{\kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left( u
 where $\textbf{s}_1 = \frac{\nabla f}{|\nabla f|}$, $\textbf{s}_2 = \frac{\nabla^{\bot} f}{|\nabla f|}$ and $q_{\textbf{s}_i} = \textbf{s}_i^T \nabla u$ for $q = u, v$. That is, $q_{\textbf{s}_i}$ is the directional derivative of $q$ in the direction of the image gradient ($i=1$) or the orthogonal direction ($i=2$). This means that setting $D=P$ in (\ref{EL_regu}) steers the diffusion so that flow vectors are smoothed in the direction of the image gradients.
 
 \subsection{Discretizing the Nagel and Enkelmann smoothness term}
-Setting $D=P$ in (\ref{EL_regu}) leads to the following Euler-Lagrange system:
+Setting $\Theta=P$ in (\ref{EL_regu}) leads to the following Euler-Lagrange system:
 \begin{align*}
 \frac{\partial M}{\partial u} - \frac{1}{\sigma^2} \text{div}(P \nabla u) \\
 \frac{\partial M}{\partial v} - \frac{1}{\sigma^2} \text{div}(P \nabla v).
@@ -312,9 +310,9 @@ where $\psi_V(s^2)$ is some penaliser function. The contribution to (\ref{EL}) i
 \end{align*}
 and equivalent for $(\partial_{v_x} V, \partial_{v_y} V)$. Thus the diffusion matrix of (\ref{EL_regu}) is given as
 \begin{align*}
-D_{IF} = 2 \psi_V'\left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) I,
+\Theta_{IF} = 2 \psi_V'\left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) I,
 \end{align*}
-where $I$ is the identity matrix. As a convex penaliser, Cohen (1993) suggested the following total variation regulariser:
+where $I$ is the identity matrix, which is seen to be a function of the flow gradient. As a convex penaliser, Cohen (1993) suggested the following total variation regulariser:
 \begin{align*}
 \psi_V(s^2) = \sqrt{s^2 + \epsilon^2},
 \end{align*} 
@@ -332,14 +330,34 @@ This penaliser function results in the following Euler-Lagrange system
 \end{equation}
 which is clearly a non-linear system.
 
+
 \subsection{The Lagged Diffusivity Fixed Point Method}
 The non-linear system (\ref{EL_LD}) can be solved using the method of lagged diffusivity, which is a fixed point scheme that can be traced back to Weiszfeld's method of minimizing Euclidean lengths, and for which global and linear convergence can be proven (Chan et. al. 1999). From (\ref{EL_LD}) we can define the fixed point method as
 \begin{align*}
-\partial_{u^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{u^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{u^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) = 0 \\
-\partial_{v^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{v^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{v^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) = 0,
+\partial_{u^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{u^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{u^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) &= 0 \\
+\partial_{v^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{v^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{v^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) &= 0,
 \end{align*}
-where we solve for $u^{k+1}$ and $v^{k+1}$ given $u^k$ and $v^k$ from the previous iteration.
-
+where we solve for $u^{k+1}$ and $v^{k+1}$ given $u^k$ and $v^k$ from the previous iteration. This is a linear system in each iteration, and it can be solved in the same manner as the previous methods. The system to be solved at iteration $k+1$ is
+\begin{align*}
+(D^T D + \frac{1}{\sigma^2} L^T\Theta^{k}L) \textbf{w}^{k+1} = - D^T \textbf{c},
+\end{align*}
+where $\Theta^k$ is the following 4mn-by-4mn diagonal block matrix
+\begin{align*}
+\Theta^k = \left[
+\begin{array}{c|c|c|c}
+\theta^k & 0 & 0 & 0 \\ \hline
+0 & \theta^k & 0 & 0 \\ \hline
+0 & 0 & \theta^k & 0 \\ \hline
+0 & 0 & 0 & \theta^k
+\end{array}
+\right].
+\end{align*}
+The submatrix $\theta^k$ is the mn-by-mn diagonal matrix with the values 
+\begin{align*}
+\theta^k_i = 2 \psi_V'\left( \left[u^k_{\textbf{s}_1}(x^i)\right]^2 + \left[u^k_{\textbf{s}_2}(x^i)\right]^2 + \left[v^k_{\textbf{s}_1}(x^i)\right]^2 + \left[v^k_{\textbf{s}_2}(x^i)\right]^2 \right)
+\end{align*}
+along its diagonal.
+  
 
 \begin{thebibliography}{}
 
