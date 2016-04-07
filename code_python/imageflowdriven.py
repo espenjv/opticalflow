@@ -43,7 +43,6 @@ def makeDiffusionMatrix(s1,s2,grad_w,m,n,eps):
 
     return V
 
-
 def findFlow(g,c,regu):
     # Finds the flow vector for the image and flow driven method using lagged
     # diffusivity iteration scheme

@@ -12,13 +12,15 @@ def dirDeriv(g):
     #          s2: direction parallel to image edges
 
     k = 0.0001 # Small parameter to avoid singular matrices
-    [Dx, Dy] = HS.imageDiff(g)
+    [Dx, Dy] = HS.forwardDifferenceImage(g)
     grad = np.sqrt(np.power(Dx,2) + np.power(Dy,2))
-    grad = grad + k
     sx = sparse.diags(np.divide(Dx,grad),0,format='csr')
     sy = sparse.diags(np.divide(Dy,grad),0,format='csr')
     s1 = sparse.hstack((sx,sy),format='csr').T
     s2 = sparse.hstack((-sy,sx),format='csr').T
+
+    print Dx[10]
+    print Dy[10]
     return s1,s2
 
 def smoothnessNE(g,kappa):
@@ -30,7 +32,7 @@ def smoothnessNE(g,kappa):
 
     [m,n] = g.shape
 
-    [Dx, Dy] = HS.imageDiff(g)
+    [Dx, Dy] = HS.forwardDifferenceImage(g)
     grad = np.power(Dx,2) + np.power(Dy,2) # The square of the gradient
     denom = grad + 2*math.pow(kappa,2) # Denominator in the NE diffusion matrix
     sx = np.divide(np.power(Dx,2),denom) # gx^2/denominator

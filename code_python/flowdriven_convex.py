@@ -14,7 +14,7 @@ def findFlow(g,c,regu):
     # Returns     w: flow vector
 
     # Regularization parameter in the convex penaliser
-    eps = 0.001
+    eps = 0.0001
     [m,n] = g.shape
 
     # D, L and Model term
@@ -45,7 +45,7 @@ def findFlow(g,c,regu):
     iter_max = 20
     iter_nr = 0
     print np.max(del_w)
-    while np.max(del_w) > math.pow(10,-4) and iter_nr < iter_max:
+    while np.max(del_w) > math.pow(10,-6) and iter_nr < iter_max:
         print iter_nr
         iter_nr += 1
         G = M + math.pow(regu,-2)*V
