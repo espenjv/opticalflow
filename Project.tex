@@ -32,7 +32,7 @@
 \maketitle
 
 \section{Motivation}
-When an observer of an object moves relative to the object, there is an apparent relative motion in the image plane of the observer. The problem of determining this relative motion from a sequence of images is called the Optical Flow problem. The analysis is not so much dependent on prior knowledge of the scene, but on the image sequence itself. This independency makes it applicable in many different fields. More concisely, one wants to find a flow vector components $u,v \in \mathbb{R}$ by looking at the change in brightness $f(x,t)$ at a specific pixel from one frame to another. This is problematic because we can not independently determine a vector of 2 components using one constraint coming from the change in image brightness at a point $x$. Thus we need to impose other constraints to make the problem solvable.
+When an observer of an object moves relative to the object, there is an apparent relative motion in the image plane of the observer. The problem of determining this relative motion from a sequence of images is called the Optical Flow problem. The analysis is not so much dependent on prior knowledge of the scene, but on the image sequence itself. This independency makes it applicable in many different fields. More concisely, one wants to find flow vector components $u,v \in \mathbb{R}$ by looking at the change in brightness $f(x,t)$ at a specific pixel from one frame to another for $x \in \Omega$, where $\Omega$ is considered to be a rectangular domain. This is problematic because we can not independently determine a vector of 2 components using one constraint coming from the change in image brightness at a point $x \in \Omega$. Thus we need to impose other constraints to make the problem solvable.
 
 \section{The Brightness constancy assumption}
 The starting point for the variational approach to optical flow is the so called brightness constancy assumption of Horn and Schunck \cite{HS}. Let $f(x,t)$ be the grayscale value of some image sequence. To constrain our problem we make an assumption regarding invariance in the brightness: a point moving with velocity $\frac{dx}{dt} = u(x,t)$ along the trajectory $x(t)$ over time $t$ does not change its appearance. This assumption is called the brightness constancy assumption, and it means that if the scene has the same lighting, then movement of an object along a trajectory does not change its brightness. In mathematical notation this is (under perfect conditions) equivalent to the following:
@@ -53,27 +53,27 @@ To combine the two constraints into one term we form a global energy function co
 \begin{align}
 E(u,v) = \frac{1}{2} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) \, dx dy,
 \end{align}
-where $\sigma > 0$ is a regularization parameter. The problem is now to find the minimum of the energy functional $E(u,v)$. From calculus of variations we have that if $u$ minimizes a functional $J(\textbf{w}) = \iint \limits_\Omega F(x,y,\textbf{w},\textbf{w}_x,\textbf{w}_y) \, dxdy$ then the first variation must be zero:
+where $\sigma > 0$ is a regularization parameter. The problem is now to find the minimum of the energy functional $E(u,v)$. Let $\textbf{w} = (u,v)$. From calculus of variations we have that if $\textbf{w}$ minimizes a functional $J(\textbf{w}) = \iint \limits_\Omega F(x,y,\textbf{w},\textbf{w}_x,\textbf{w}_y) \, dxdy$ then the first variation must be zero:
 \begin{align*}
-\delta J(\textbf{w}) = \epsilon \frac{d}{d \epsilon} \left[ J(\textbf{w} + \epsilon \bm{\eta}) \right] = 0 
+\delta J(\textbf{w}) = \frac{d}{d \epsilon} \left[ J(\textbf{w} + \epsilon \bm{\eta}) \right] = 0 
 \end{align*}
-for an arbitrary function $\bm{\eta}(x,y)$. We get
+for any arbitrary function $\bm{\eta}(x,y)$. We get
 \begin{align*}
-\delta J(\textbf{w}) =& \epsilon \iint \limits_{\Omega} \frac{d}{d \epsilon} F(x,y,\textbf{w} + \epsilon \bm{\eta}, \textbf{w}_x + \epsilon \bm{\eta}_x, \textbf{w}_y + \epsilon \bm{\eta}_y) \, dxdy \\
-=& \epsilon \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \bm{\eta}_x F_{\textbf{w}_x} + \bm{\eta}_y F_{\textbf{w}_y} \, dxdy \\
-=& \epsilon \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) - \bm{\eta} \left( \frac{d}{d x} F_{\textbf{w}_x} + \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy
+\delta J(\textbf{w}) =&  \iint \limits_{\Omega} \frac{d}{d \epsilon} F(x,y,\textbf{w} + \epsilon \bm{\eta}, \textbf{w}_x + \epsilon \bm{\eta}_x, \textbf{w}_y + \epsilon \bm{\eta}_y) \, dxdy \\
+=&  \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \bm{\eta}_x F_{\textbf{w}_x} + \bm{\eta}_y F_{\textbf{w}_y} \, dxdy \\
+=& \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) - \bm{\eta} \left( \frac{d}{d x} F_{\textbf{w}_x} + \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy
 \end{align*}
-Now let $\Gamma_{e}$, $\Gamma_{w}$, $\Gamma_{n}$ and $\Gamma_{s}$ be the east, west, north and south boundary of our domain respectively. Then using Gauss' Theorem gives the following
+Now let $\Gamma_{E}$, $\Gamma_{W}$, $\Gamma_{N}$ and $\Gamma_{S}$ be the east, west, north and south boundary of our domain respectively. Then using Gauss' Theorem gives
 \begin{align*}
-&\epsilon \iint \limits_{\Omega}  \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) \, dxdy = \\ &\int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy
+& \iint \limits_{\Omega}  \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) \, dxdy \\ =  &\int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy
 \end{align*}
-Using this result, we get the following
+Using this result, we get
 \begin{align*}
-&\delta J(\textbf{w}) = \epsilon \iint \limits_{\Omega} \bm{\eta} \left( F_\textbf{w} -  \frac{d}{d x} F_{\textbf{w}_x} - \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy + \\ &\epsilon \left( \int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy \right).
+&\delta J(\textbf{w}) = \iint \limits_{\Omega} \bm{\eta} \left( F_\textbf{w} -  \frac{d}{d x} F_{\textbf{w}_x} - \frac{d }{d y} F_{\textbf{w}_y} \right) \, dxdy  \\ + & \left( \int_{\Gamma_{E}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{W}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{N}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{S}} \bm{\eta} F_{\textbf{w}_y} \, dy \right) = 0.
 \end{align*}
-When $J = 0$, and letting $\eta(x,y)$ be an arbitrary funtion, it follows that
+Since this must hold for any arbitrary function $\bm{\eta}(x,y)$ it follows that
 \begin{align*}
-F_{\textbf{w}} - \frac{\partial}{\partial x} F_{\textbf{w}_x} - \frac{\partial }{\partial y} F_{\textbf{w}_y} &= 0 \quad \text{in} \ \Omega \\
+F_{\textbf{w}} - \frac{d}{dx} F_{\textbf{w}_x} - \frac{d }{d y} F_{\textbf{w}_y} &= 0 \quad \text{in} \ \Omega \\
 F_{\textbf{w}_x} &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w \\
 F_{\textbf{w}_y}& = 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s
 \end{align*}
@@ -81,9 +81,9 @@ This is called the Euler-Lagrange equation of variational calculus. From this re
 \begin{equation}
 \label{EL}
   \begin{aligned}
-\partial_{\textbf{w}} M - \frac{1}{\sigma^2}\left( \frac{\partial}{\partial x} \partial_{\textbf{w}_x} V + \frac{\partial}{\partial y} \partial_{\textbf{w}_y} V \right) &= 0 \quad \text{in} \ \Omega  \\
-\partial_{\textbf{w}_x} V &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w \\
-\partial_{\textbf{w}_y} V &= 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s
+\partial_{\textbf{w}} M - \frac{1}{\sigma^2}\left( \frac{d}{d x} \partial_{\textbf{w}_x} V + \frac{d}{d y} \partial_{\textbf{w}_y} V \right) &= 0 \quad \text{in} \ \Omega  \\
+\partial_{\textbf{w}_x} V &= 0 \quad \text{on} \ \Gamma_E \ \text{and} \ \Gamma_W \\
+\partial_{\textbf{w}_y} V &= 0 \quad \text{on} \ \Gamma_N \ \text{and} \ \Gamma_S
   \end{aligned}
 \end{equation}
 The smoothness term will be a function of the gradient of the flow. It is convenient to write the first equation in the Euler-Lagrange system in the form
@@ -93,8 +93,15 @@ The smoothness term will be a function of the gradient of the flow. It is conven
 \partial_q M - \frac{1}{\sigma^2} \text{div} \left(\Theta \nabla q \right) = 0 \\
 	\end{aligned}
 \end{equation}
-for $q \in u, v$ where $\Theta$ is a diffusion matrix steering the direction of the diffusion, and can be both dependent or independent of the gradient itself.
+for $q \in u, v$ where $\Theta$ is a diffusion matrix steering the direction of the diffusion, and can be both dependent or independent of the gradient itself. The framework above will be the same for all the methods explained below, and the choice of diffusion matrix will be the thing that separates them. 
 
+\begin{table}
+\begin{tabular}{c|c}
+Method & $\Theta$
+\end{tabular}
+\caption{$log(\vectornorm{e^{(i)}}_{\infty n})$-values for the Jacobi algorithm }
+\label{nvalues}
+\end{table}
 
 \section{The approach by Horn and Schunck}
 The research of Horn and Shunck (1981) has formed the basis of further research in the field of optical flow. They proposed the following quadratic penalised data term
@@ -113,7 +120,7 @@ The smoothness term used by Horn and Schunck is the following
 \begin{align*}
 V(\nabla u, \nabla v) = |\nabla u|^2 + |\nabla v|^2.
 \end{align*}
-This is a homogeneous regularizer which means that it performs an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix $\Theta$ being the identity matrix. Using this function as a flow regularizer gives
+This is a homogeneous regularizer which means that it applies an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrix $\Theta$ being the identity matrix. Using this function as a flow regularizer gives
 \begin{align*}
 \frac{\partial V}{\partial q_{x_i}} = 2q_{x_i},
 \end{align*}
@@ -133,33 +140,14 @@ for $q \in u,v$ and $x_i = x, y$. Dividing by the factor of 2 in all terms resul
 
 \subsection{Discretizing the Horn and Schunck method}
 \label{sec: disc}
-Let now our image be of dimension m-by-n, and let $f^i$ be the image at $t=i$. Also, we let $(x^i)_ {i \in [mn]}$ define a regular 2-dimensional grid in $\Omega$. The corresponding vector representation of the image $f$ is denoted as $\textbf{f}(x^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\textbf{w}(x^i)$ is represented as the following vector in $\mathbb{R}^{2mn}$:
+Let now our image be of dimension m-by-n, and let $f^1$ and $f^2$ be the image at $t=1$ an $t=2$ respectively. Also, we flatten the regular 2-dimensional grid in $\Omega$ and consider now $(x^i)_ {i \in [mn]}$ so that $(x,y) = (\left \lfloor{i/m}\right \rfloor, i - \left \lfloor{i/m}\right \rfloor) h$, with $h$ being the distance between vertical and horisontal grid points in $\Omega$. The corresponding vector representation of the image $f$ is denoted as $\textbf{f}(x^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\textbf{w}(x^i)$ is represented as the following vector in $\mathbb{R}^{2mn}$:
 \begin{align*}
      \textbf{w}(x^i)=\begin{bmatrix}
          u(x^i)_{i\in [mn]}  \\
          v(x^i)_{i \in [mn]} \\
         \end{bmatrix}.
 \end{align*}
-For the discretization of the image gradient in (\ref{EL_HS}) the sobel filters
-\begin{align*}
-G_x =
-\left[ 
-\begin{tabular}{ l c r }
-  -1 & 0 & 1 \\
-  -2 & 0 & 2 \\
-  -1 & 0 & 1 \\
-\end{tabular}
-\right] & &\text{and} & & 
-G_y =
-\left[ 
-\begin{tabular}{ l c r }
-  -1 & -2 & -1 \\
-  0 & 0 & 0 \\
-  1 & 2 & 1 \\
-\end{tabular}
-\right] &
-\end{align*}
-were convolved with the image $f^1$ to produce the vectors $\textbf{d}_x(x^i)$ and $\textbf{d}_y(x^i)$ in $\mathbb{R}^{mn}$, approximating the image gradients of $\textbf{f}(x^i)$ in x- and y-direction respectively. The time derivative $\frac{\partial f}{\partial t}$ is discretized using forward difference as shown below:
+For the discretization of the image gradients in (\ref{EL_HS}), the forward difference was used on $f^1$, producing the two vectors $\textbf{d}_x(x^i)$ and $\textbf{d}_y(x^i)$ in $\mathbb{R}^{mn}$. For the boundaries $\Gamma_E$ and $\Gamma_S$ a constant gradient was assumed. The time derivative $\frac{\partial f}{\partial t}$ is discretized using forward difference as shown below:
 \begin{align*}
 \textbf{c}(x^i) = \textbf{f}^2(x^i) - \textbf{f}^1(x^i),
 \end{align*} 
@@ -189,10 +177,10 @@ L_y & 0_{mn,mn} \\
 $Lx \in \mathbb{R}^{mn \times mn}$ being the following mn-by-mn block diagonal matrix:
 \begin{align*}
 L_x = \left[
-\begin{array}{c|c|c|c|c}
-I_{m} & -I_{m} & 0 & \cdots & 0 \\ \hline
-0 & 0 & I_{m} & -I_{m} & 0 \\ \hline
-0 & 0 & 0 & \ddots & \ddots \\ \hline
+\begin{array}{c|c|c|c}
+I_{m} & -I_{m} & 0 & \cdots \\ \hline
+0 &  I_{m} & -I_{m} & 0 \\ \hline
+0 & 0 & \ddots & \ddots \\
 \end{array}
 \right],
 \end{align*}
@@ -345,16 +333,16 @@ where $\Theta^k$ is the following 4mn-by-4mn diagonal block matrix
 \begin{align*}
 \Theta^k = \left[
 \begin{array}{c|c|c|c}
-\theta^k & 0 & 0 & 0 \\ \hline
-0 & \theta^k & 0 & 0 \\ \hline
-0 & 0 & \theta^k & 0 \\ \hline
-0 & 0 & 0 & \theta^k
+\chi^k & 0 & 0 & 0 \\ \hline
+0 & \chi^k & 0 & 0 \\ \hline
+0 & 0 & \chi^k & 0 \\ \hline
+0 & 0 & 0 & \chi^k
 \end{array}
 \right].
 \end{align*}
-The submatrix $\theta^k$ is the mn-by-mn diagonal matrix with the values 
+The submatrix $\chi^k$ is the mn-by-mn diagonal matrix with the values 
 \begin{align*}
-\theta^k_i = 2 \psi_V'\left( \left[u^k_{\textbf{s}_1}(x^i)\right]^2 + \left[u^k_{\textbf{s}_2}(x^i)\right]^2 + \left[v^k_{\textbf{s}_1}(x^i)\right]^2 + \left[v^k_{\textbf{s}_2}(x^i)\right]^2 \right)
+\chi^k_i = 2 \psi_V'\left( \left[u^k_{\textbf{s}_1}(x^i)\right]^2 + \left[u^k_{\textbf{s}_2}(x^i)\right]^2 + \left[v^k_{\textbf{s}_1}(x^i)\right]^2 + \left[v^k_{\textbf{s}_2}(x^i)\right]^2 \right)
 \end{align*}
 along its diagonal.
   
