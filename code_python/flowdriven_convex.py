@@ -6,7 +6,7 @@ from scipy import misc, ndimage,sparse, signal
 from scipy.sparse.linalg import spsolve
 import math
 
-def findFlow(g,c,regu):
+def findFlow(g,c,regu,Diff_method):
     # Computes the flow using lagged diffusivity
     # Parameters: g: image
     #             c: time discretization
@@ -18,7 +18,7 @@ def findFlow(g,c,regu):
     [m,n] = g.shape
 
     # D, L and Model term
-    D = HS.makeDmatrix(g)
+    D = HS.makeDmatrix(g,Diff_method)
     L = HS.makeLmatrix(m,n)
     M = (D.T).dot(D)
 

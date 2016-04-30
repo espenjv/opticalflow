@@ -1,0 +1,53 @@
+\chapter{Variational Formulation}
+\sectionmark{Variational Formulation}
+To combine the two constraints into one term we form a global energy function consisting of the data term and the smoothness term:
+\begin{align}
+E(u,v) = \frac{1}{2} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) \, dx \, dy,
+\end{align}
+where $\sigma > 0$ is a regularization parameter. The problem is now to find the minimum of the energy functional $E(u,v)$. From calculus of variations we have that if $\textbf{w}$ minimizes a functional
+\begin{align*}
+J(\textbf{w}) = \iint \limits_\Omega F(x,y,\textbf{w},\textbf{w}_x,\textbf{w}_y) \, dx \, dy,
+\end{align*} 
+then the first variation must be zero,
+\begin{align*}
+\delta J(\textbf{w}) = \frac{d}{d \epsilon} \left[ J(\textbf{w} + \epsilon \bm{\eta}) \right] = 0,
+\end{align*}
+for any arbitrary function $\bm{\eta}(x,y)$. We get
+\begin{align*}
+\delta J(\textbf{w}) =&  \iint \limits_{\Omega} \frac{d}{d \epsilon} F(x,y,\textbf{w} + \epsilon \bm{\eta}, \textbf{w}_x + \epsilon \bm{\eta}_x, \textbf{w}_y + \epsilon \bm{\eta}_y) \, dx \, dy \\
+=&  \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \bm{\eta}_x F_{\textbf{w}_x} + \bm{\eta}_y F_{\textbf{w}_y} \, dx \, dy \\
+=& \iint \limits_{\Omega} \bm{\eta} F_\textbf{w} + \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) - \bm{\eta} \left( \frac{d}{d x} F_{\textbf{w}_x} + \frac{d }{d y} F_{\textbf{w}_y} \right) \, dx \, dy
+\end{align*}
+Now let $\Gamma_{E}$, $\Gamma_{W}$, $\Gamma_{N}$ and $\Gamma_{S}$ be the east, west, north and south boundary of our domain respectively. Then using Gauss' Theorem gives
+\begin{align*}
+& \iint \limits_{\Omega}  \frac{d}{d x} (\bm{\eta} F_{\textbf{w}_x}) + \frac{d }{d y} (\bm{\eta} F_{\textbf{w}_y}) \, dx \, dy \\ 
+=  &\int_{\Gamma_{e}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{w}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{n}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{s}} \bm{\eta} F_{\textbf{w}_y} \, dy
+\end{align*}
+Using this result, we get
+\begin{align*}
+&\delta J(\textbf{w}) = \iint \limits_{\Omega} \bm{\eta} \left( F_\textbf{w} -  \frac{d}{d x} F_{\textbf{w}_x} - \frac{d }{d y} F_{\textbf{w}_y} \right) \, dx \, dy  \\ 
++ & \left( \int_{\Gamma_{E}} \bm{\eta} F_{\textbf{w}_x} \, dx - \int_{\Gamma_{W}} \bm{\eta} F_{\textbf{w}_x} \, dx + \int_{\Gamma_{N}} \bm{\eta} F_{\textbf{w}_y} \, dy - \int_{\Gamma_{S}} \bm{\eta} F_{\textbf{w}_y} \, dy \right) = 0.
+\end{align*}
+Since this must hold for any arbitrary function $\bm{\eta}(x,y)$ it follows that
+\begin{align*}
+F_{\textbf{w}} - \frac{d}{dx} F_{\textbf{w}_x} - \frac{d }{d y} F_{\textbf{w}_y} &= 0 \quad \text{in} \ \Omega \\
+F_{\textbf{w}_x} &= 0 \quad \text{on} \ \Gamma_e \ \text{and} \ \Gamma_w \\
+F_{\textbf{w}_y}& = 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s
+\end{align*}
+This is called the Euler-Lagrange equation of variational calculus. From this result it is easy to see that the following must hold for our functional:
+\begin{equation}
+\label{EL}
+  \begin{aligned}
+\partial_{\textbf{w}} M - \frac{1}{\sigma^2}\left( \frac{d}{d x} \partial_{\textbf{w}_x} V + \frac{d}{d y} \partial_{\textbf{w}_y} V \right) &= 0 \quad \text{in} \ \Omega  \\
+\partial_{\textbf{w}_x} V &= 0 \quad \text{on} \ \Gamma_E \ \text{and} \ \Gamma_W \\
+\partial_{\textbf{w}_y} V &= 0 \quad \text{on} \ \Gamma_N \ \text{and} \ \Gamma_S
+  \end{aligned}
+\end{equation}
+As previously noted, we are dealing with quadratic smoothness terms. Using the notation of (\ref{SmoothnessTerm}), the first equation in the Euler-Lagrange system can be written as
+\begin{equation}
+\label{EL_regu}
+  \begin{aligned}
+\partial_q M - \frac{1}{\sigma^2} \text{div} \left(\Theta_q \nabla q \right) = 0 \\
+	\end{aligned}
+\end{equation}
+for $q \in u, v$. The matrix $\Theta_q$ is a diffusion matrix steering the direction of diffusion for each flow component. Its eigenvectors and corresponding eigenvalues gives the direction and magnitude of smoothing respectively. The theoretical framework presented up to this point is the same for all the methods considered here. The main distinction for each method will be across which boundaries the flow field is smoothed, that is, the choice of diffusion matrix. We start with the simplest choice; the uniform smoothness approach by Horn and Schunck.

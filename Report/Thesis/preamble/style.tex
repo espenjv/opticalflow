@@ -1,0 +1,58 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Customize the formatting of the document
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Page formatting
+\makepagestyle{ruled}
+\makeevenfoot{ruled}{}{}{}
+\makeoddfoot{ruled}{}{}{}
+\makeheadrule{ruled}{\textwidth}{\normalrulethickness}
+\makeevenhead{ruled}{\sffamily\leftmark}{}{\sffamily\thepage}
+\makeoddhead{ruled}{\sffamily\thepage}{}{\sffamily\rightmark}
+\makepsmarks{ruled}{
+	\nouppercaseheads
+	\createmark{chapter}{right}{nonumber}{}{}
+	\createmark{section}{left}{nonumber}{}{}
+	\createplainmark{toc}{both}{\contentsname}
+	\createplainmark{lof}{both}{\listfigurename}
+	\createplainmark{lot}{both}{\listtablename}
+	\createplainmark{bib}{both}{\bibname}
+	\createplainmark{index}{both}{\indexname}
+	\createplainmark{glossary}{both}{\glossaryname}
+}
+
+\pagestyle{ruled}
+
+\aliaspagestyle{chapter}{ruled}
+\aliaspagestyle{title}{empty}
+
+% Chapter formatting
+\chapterstyle{hangnum}
+\renewcommand{\chapnumfont}{\LARGE\sffamily\bfseries}
+\renewcommand{\chaptitlefont}{\LARGE\sffamily\bfseries}
+\renewcommand{\beforechapskip}{0.5em}
+\renewcommand{\afterchapskip}{0.7em}
+
+% Section formatting
+\setsecheadstyle{\Large\raggedright\sffamily}
+\setsubsecheadstyle{\large\raggedright\sffamily}
+\setsubsubsecheadstyle{\raggedright\sffamily}
+
+% Caption formatting
+\captionstyle{}
+\captionnamefont{\small\scshape}
+\captiontitlefont{\small}
+
+% Bibliography formatting
+\renewcommand{\mkbibnamefirst}[1]{\textsc{#1}}
+\renewcommand{\mkbibnamelast}[1]{\textsc{#1}}
+\renewcommand{\mkbibnameprefix}[1]{\textsc{#1}}
+\renewcommand{\mkbibnameaffix}[1]{\textsc{#1}}
+
+% Numerical structure
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+\numberwithin{equation}{chapter}
+

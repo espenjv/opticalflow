@@ -1,0 +1,77 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     Define custom macros and environments
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Macro for declaring a supervisor
+\newcommand{\supervisor}[1]{\def\thesupervisor{#1}}
+
+% Macro for including figures
+\newcommand{\includefigure}[4][\@empty]{
+	\begin{figure}[H]
+	\centering
+
+	\ifx \@empty#1
+		\includegraphics[width=\textwidth]{#2}
+	\else
+		\includegraphics[#1]{#2}
+	\fi
+
+	\caption{#4}
+	\label{#3}
+	\end{figure}
+}
+
+% Improved table environment
+\newcommand{\tablesection}{\midrule}
+\newenvironment{tab}[3]
+{
+	\begin{table}[H]
+	\centering
+	\caption{#3}
+	\label{#2}
+	\begin{tabular}{#1}
+	\toprule
+}
+{
+	\bottomrule
+	\end{tabular}
+	\end{table}
+}
+
+% Code environment
+\lstnewenvironment{code}[3]{\lstset{numbers=right,language=#1,label=#2,caption=#3,mathescape}}{}
+
+% Citations
+\DeclareCiteCommand{\footpartcite}[\mkbibfootnote]
+  {\usebibmacro{prenote}}
+  {\usebibmacro{citeindex}%
+   \printnames{labelname}\addcomma\space%
+   \printfield[citetitle]{title}}%\addnbspace%
+   %\mkbibbrackets{\usebibmacro{cite}}}
+  {\addsemicolon\space}
+  {\usebibmacro{postnote}}
+
+\DeclareMultiCiteCommand{\footpartcites}[\mkbibfootnote]{\footpartcite}{\addsemicolon\space}
+
+\let\cite=\footcite
+\let\cites=\footcites
+
+% Mathematical notation
+\newcommand{\abs}[1]{| #1 |}
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\expect}[1]{\langle #1 \rangle}
+\newcommand{\comm}[2]{[{#1},\,{#2}]_-}
+\newcommand{\anticomm}[2]{[{#1},\,{#2}]_+}
+
+\renewcommand{\d}[1]{\text{d}{#1}}
+\newcommand{\ds}[1]{\text{d}^3\mathbf{#1}\;}
+\newcommand{\dd}[2]{\frac{\text{d} #1}{\text{d} #2}}
+\newcommand{\ddd}[2]{\frac{\text{d}^2 #1}{\text{d} #2^2}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} 
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}} 
+
+\newcommand{\cc}[1]{{#1}^*}
+\newcommand{\hc}[1]{{#1}^\dagger}
+\newcommand{\tc}[1]{{#1}^\mathrm{T}}

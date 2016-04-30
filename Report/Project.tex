@@ -1,0 +1,95 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+\newcommand\bigzero{\makebox(0,0){\text{\large 0}}}
+\usepackage{graphicx}
+\usepackage{epstopdf} 
+\usepackage[justification=centering]{subfig}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[backend=bibtex8,style=authoryear,hyperref=true,url=false,isbn=true,backref=true,maxcitenames=3,maxbibnames=100,firstinits=true,block=ragged]{biblatex}
+%\usepackage[pdftex,ocgcolorlinks,colorlinks,linkcolor=DarkBlue,urlcolor=DarkGreen,citecolor=Black,linktoc=page,breaklinks]{hyperref}
+
+\addbibresource{library.bib}
+
+
+\newcommand{\vectornorm}[1]{\left\|#1\right\|}
+
+\newcommand{\threepartdef}[6]
+{
+	\left\{
+		\begin{array}{lll}
+			#1 & \mbox{for } #2 \\
+			#3 & \mbox{for } #4 \\
+			#5 & \mbox{for } #6
+		\end{array}
+	\right.
+}
+
+\begin{document}
+\title{Semester project}
+\author{Espen Johansen Velsvik}
+\maketitle
+
+\section{Introduction}
+\input{Introduction}
+
+\section{The Brightness constancy assumption}
+\input{BCA}
+
+\section{The Smoothness constraint}
+\input{SmoothnessConstraint}
+
+\section{The variational formulation}
+\input{VariationalFormulation}
+
+\section{The approach by Horn and Schunck}
+\input{HSMethod}
+
+
+\section{Anisotropic image-driven regularization}
+\input{AnisotropicImageDriven}
+
+\section{Isotropic Flow-driven regularization}
+\input{IsotropicFlowDriven}
+  
+
+%\begin{thebibliography}{}
+%
+%\bibitem{Chan}
+%Chan, T. and Mulet, P. (1999) On the convergence of the lagged diffusivity fixed point method in total variation image restoration. \emph{SIAM Journal of Numerical Analysis} (Vol. 36, No. 2, pp 354-367)
+%
+%\bibitem{Cohen}
+%Cohen, I. (1993). Nonlinear variational method for optical flow computation. \emph{Proceedings. Eighth Scandinavian conference on Image Analysis} (Vol. 1, pp. 523–530). Norway, Tromsø.
+%
+%\bibitem{CH}
+%Courant, R. and Hilbert, D. (1953). Methods of Mathematical Physics. Vol. I (First English ed.), Interscience Publishers, New York
+%
+%\bibitem{Courant}
+%Courant, R. (1947). Differential and Integral Calculus, Vol. II, 2nd edition, Interscience Publishers, New York
+%
+%
+%\bibitem{HS}
+%Horn, B. and Schunck, B. (1981). Determining optical flow. \emph{Artificial Intelligence}, 17, 185-203.
+%
+%\bibitem{NE}
+%Nagel, H. and Enkelmann, W. (1986). An investigation of smoothness constraints for the estimation of displacement vector fields from image sequences. \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 8, 565-593
+%
+%\bibitem{SH}
+%Shulman, D. and Hervé, J. (1989). Regularization of discontinuous flow fields. \emph{Proceedings. Workshop on Visual Motion} (pp. 81–86). Irvine: IEEE Computer Society Press.
+%
+%\bibitem{OFH}
+%Zimmer, H., Bruhn, A., Weickert, J. (2011). Optic Flow in Harmony \emph{International Journal of Computer Vision}, 93, 368-388
+%
+%
+%\end{thebibliography}
+%
+
+\printbibliography
+
+\end{document}
+

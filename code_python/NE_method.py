@@ -4,7 +4,7 @@ from scipy import sparse
 import math
 
 
-def dirDeriv(g):
+def dirDeriv(g,m,n):
     # Finds the unit vevtors in the direction normal to the image edges and
     # parallel to the image edges (see framework in Optical Flow in Harmony)
     # Parameters: g: image as m-by-n 2-dimensional array
@@ -12,27 +12,22 @@ def dirDeriv(g):
     #          s2: direction parallel to image edges
 
     k = 0.0001 # Small parameter to avoid singular matrices
-    [Dx, Dy] = HS.forwardDifferenceImage(g)
-    grad = np.sqrt(np.power(Dx,2) + np.power(Dy,2))
+    [Dx, Dy] = HS.forwardDifferenceImage(g,m,n)
+    grad = np.sqrt(np.power(Dx,2) + np.power(Dy,2) + np.power(k,2))
     sx = sparse.diags(np.divide(Dx,grad),0,format='csr')
     sy = sparse.diags(np.divide(Dy,grad),0,format='csr')
     s1 = sparse.hstack((sx,sy),format='csr').T
     s2 = sparse.hstack((-sy,sx),format='csr').T
-
-    print Dx[10]
-    print Dy[10]
     return s1,s2
 
-def smoothnessNE(g,kappa):
+def smoothnessNE(g,m,n,kappa):
     # Computes the anisotropic image driven smoothness term
     # of Nagel and Enkelmann.
     # Parameters: g: image as m-by-n array
     #          kappa: regularization parameter
     # Returns: V: smoothness array
 
-    [m,n] = g.shape
-
-    [Dx, Dy] = HS.forwardDifferenceImage(g)
+    [Dx, Dy] = HS.forwardDifferenceImage(g,m,n)
     grad = np.power(Dx,2) + np.power(Dy,2) # The square of the gradient
     denom = grad + 2*math.pow(kappa,2) # Denominator in the NE diffusion matrix
     sx = np.divide(np.power(Dx,2),denom) # gx^2/denominator

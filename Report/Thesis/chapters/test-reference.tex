@@ -1,0 +1,17 @@
+\chapter{References and citations}
+\section{Test section}
+We will now briefly demonstrate how to produce references and citations.
+The easiest way to consistently refer to equations and floats, is to use the macro \texttt{\textbackslash cref}.
+For example we can refer to one equation, such as \cref{eq:integral}; we can refer to multiple equations, such as \cref{eq:diffeq,eq:matrices}; or we can even refer to different kinds of objects at the same time, such as \cref{fig:test,tab:test,code:test}.
+
+When we want to cite an academic paper or book, the standard option is to use the macro \texttt{\textbackslash cite}.\cite{hipster}
+By default, this produces a footnote citation, since these are unintrusive yet informative.
+However, if you prefer any other way of formatting the citations, then you just have to comment out the redefinitions of \texttt{\textbackslash cite} and \texttt{\textbackslash cites} from \texttt{preamble/macro.tex}, and then tweak the arguments to BibLaTeX in the file  \texttt{preamble/include.tex} until you're satisfied.
+It is also possible to give optional arguments to the citations.\cite[1--5]{statistics}
+This includes the possibility of adding text to the footnote citations.\cite[As an example, we will now refer to][10--15]{feynman}
+Furthermore, using commands like \texttt{\textbackslash textcite}, it is also possible to cite \textcite[10--15]{feynman} inline.
+Finally, we can also cite multiple sources at once using the \texttt{\textbackslash cites} macro.\cites[1--5]{hipster}[2,4]{statistics}[25]{haskell}%
+\footnote{This one is just a regular footnote, not a citation.}
+
+Note that all the papers and books that we cited above, have to be declared in the BibTeX bibliography file \texttt{library.bib}.
+The format of the bibliography entries should hopefully be clear from the included examples; if not, then as usual, Google is your friend.

@@ -3,7 +3,6 @@ import HS_method as HS
 import NE_method as NE
 import flowdriven_convex as FDC
 import imageflowdriven as IF
-import comp_reg as cg
 import multigrid as mg
 
 import numpy as np
@@ -51,16 +50,67 @@ g = g1
 # plt.spy(Lx)
 # plt.show()
 
-print np.hstack((np.zeros(m-2),[-1,1])).shape
-Ly1 = sparse.diags([-np.ones(m), np.ones(m-1)],[0,1],format = 'lil')
-Ly1[m-1,:] = np.hstack((np.zeros(m-2),[-1,1]))
-plt.spy(Ly1)
-plt.show()
+# g_vec = np.reshape(g.T,[1,m*n])[0]
+# lx = sparse.hstack((-sparse.eye(m),np.zeros((m,m))))
+# lx = sparse.hstack((lx,sparse.eye(m)))
+# lx = 1.0/2*lx
+# Lx = 1.0/2*sparse.diags([-np.ones(m*(n-1)),np.ones((n-1)*m)],[-m,m],format = 'lil')
+# Lx[m*(n-1):m*n,m*(n-3):m*n] = lx
+# Lx[0:m,0:m*3] = lx
+#
+# dx = Lx.dot(g_vec)
+# Dx = np.reshape(dx.T,[n,m]).T
+# plt.figure()
+# plt.imshow(Dx)
+# plt.show()
+# sub_1 = sparse.lil_matrix((m,2*m))
+# k = 0.001
+#
+# g_vec = np.reshape(g.T,[1,m*n])[0]
+# lxx = sparse.hstack((-sparse.eye(m),sparse.eye(m)))
+# Lxx = sparse.diags([np.ones(m*(n-1)),-2*np.ones(n*m),np.ones((n-1)*m)],[-m,0,m],format = 'lil')
+# Lxx[m*(n-1):m*n,m*(n-2):m*n] = -lxx
+# Lxx[0:m,0:m*2] = lxx
+#
+# lyy = np.array([-1.0,1.0])
+# Lyy1 = sparse.diags([np.ones(m-1), -2*np.ones(m),np.ones(m-1)],[-1,0,1],format = 'lil')
+# Lyy1[m-1:m,m-2:m] = -lyy
+# Lyy1[0,0:2] = lyy
+# Lyy = sparse.kron(sparse.eye(n),Lyy1,format = 'csr')
+#
+# #TODO: fxy derivative. See formula in blue book
+# Lxy = sparse.diags(-2*np.ones(m*n),0,format = 'lil')
+# Lxy[0,0] = -1
+# Lxy[m*n-1,m*n-1] = -1
+#
+# sub_1= sparse.diags(np.ones(m-1),1,format = 'lil')
+# sub_1[m-1,m-1] = 1
+# sub1 = sparse.kron(sparse.diags(np.ones(n-1),1),sub_1)
+#
+# sub_2 = sparse.diags(np.ones(m-1),-1,format = 'lil')
+# sub_2[0,0] = 1
+# sub2 = sparse.kron(sparse.diags(np.ones(n-1),-1),sub_2)
+#
+# sub3 =  sparse.diags(np.ones(m-1),-1,format = 'lil')
+# sub4 = sparse.diags(np.ones(m-1),1,format = 'lil')
+#
+# Lxy[0:m,0:m] = Lxy[0:m,0:m] + sub3
+# Lxy[m*(n-1):m*n,m*(n-1):m*n] = Lxy[m*(n-1):m*n,m*(n-1):m*n] + sub4
+#
+# Lxy = Lxy + sub1 + sub2
+#
+#
+# Dxx = Lxx.dot(g_vec) + math.pow(k,2)
+# Dyy = Lyy.dot(g_vec) + math.pow(k,2)
+#
+# Dxy = 1/2*(Lxy.dot(g_vec) + Dxx + Dyy)
 
-Ly = sparse.kron(sparse.eye(n),Ly1,format = 'csr')
-
-plt.spy(Ly)
-plt.show()
+v = (np.array([1, 2, 3])).T
+u = np.array([2, 1, 4]).T
+print u.shape
+print np.multiply(u,v)
+print (u).dot((v.T))
+print np.power(v,2)
 
 #
 # lam = 0.0001

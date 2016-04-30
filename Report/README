@@ -1,0 +1,74 @@
+ABOUT THIS TEMPLATE
+
+This LaTeX template was put together by the student Jabir Ali Ouassou
+<jabirali(at)switzerlandmail.ch> while working on a Master’s project in 2014.
+I’m sharing this template because a few people have asked me about tips
+regarding writing a thesis in LaTeX, and I hope that my work can be of some
+use to others as well. If you find the template useful, then I would really
+appreciate it if you gave me some credit for my work, such as a short mention
+in the acknowledgements of your document. But this is of course a request, not
+a requirement; you’re free to share the template with whomever you want, and
+do whatever you want with it, without my permission.
+
+If you’re using a Linux system, then you should start by installing a full
+LaTeX distribution such as texlive-full. After that, you can use the accom-
+panying Makefile to compile the LaTeX document; this means that you just
+have to open a terminal, use cd /wherever/the/template/is/, and then run
+make to compile the document. On all the common desktop platforms, you
+should also be able to install an integrated development environment for LaTeX
+such as http://texstudio.sourceforge.net, which allows you to compile
+the document straight from the graphical interface. However, be aware that
+some development environments may require additional configuration to work
+well with bibtex, biblatex, and makeidx.
+
+
+
+STRUCTURE OF THE TEMPLATE
+
+master.tex:
+	This is the master document which is compiled by LaTeX. This file is
+	where you refer to all the other LaTeX files that are a part of the,
+	and also where you define the metadata such as the author, supervisor,
+	and title of the document.
+
+master.ist:
+	This file contains the style for the index that will appear at the back
+	of the document. You probably won't need to touch this file. You can add
+	entries to the index by using the macro \index{...} in your regular .tex
+	files.
+
+library.bib:
+	This is a BibTeX file that contains a database over all the books and
+	papers that you intend to cite. Only references that are actually used will
+	appear in the bibliography; so remember that anything you add to this file
+	will be invisible in your document until you \cite{...} it. This bibliography
+	database can be written and maintained manually (check the included example,
+	or google bibtex to find a guide), but I highly recommend that you instead
+	use some automated tool like Mendeley to generate it for you.
+
+preamble/include.tex:
+	This is where you should include new LaTeX packages using \usepackage{...}.
+
+preamble/input.tex:
+	This is where you declare unicode symbols that you wish to use in LaTeX.
+
+preamble/style.tex:
+	This is where you declare stylistic properties of the document, such as margins,
+	headers, footers, and so on.
+
+preamble/macro.tex:
+	This is where you should define your custom LaTeX macros.
+
+preliminaries/*.tex
+	This is where the titlepage, abstract and preface of your document will be.
+
+chapters/*.tex
+	This folder should contain all the chapters of your document as separate .tex files.
+	Remember that for every .tex file you add here, you should also add a corresponding
+	statement \include{mainmatter/filename.tex} in master.tex for the contents to appear
+	in the document.
+
+appendices/*.tex
+	This folder should contain your appendices as separate .tex files. Remember to add
+	a corresponding \include{backmatter/filename.tex} in master.tex.
+

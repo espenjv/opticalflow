@@ -1,0 +1,25 @@
+\chapter{The Brightness Constancy Assumption}
+\sectionmark{The Brightness Constancy Assumption}
+The starting point for the variational approach to optical flow is the so called brightness constancy assumption of Horn and Schunck \cite{HS}. Let $f(x,t)$ be the grayscale value of some image sequence. To constrain the problem one makes an assumption regarding invariance in the brightness: a point moving with velocity $\frac{dx}{dt} = u(x,t)$ along the trajectory $x(t)$ over time $t$ does not change its appearance. This assumption is called the brightness constancy assumption, and it means that if the scene has the same lighting, then movement of an object along a trajectory does not change its brightness.
+\section{The Data Term}
+In mathematical notation this is (under perfect conditions) equivalent to the following:
+\begin{align*}
+\frac{d}{dt}f(x(t),t) = 0.
+\end{align*}
+By using the chain rule for differentiation, and defining $\frac{dx}{dt} = u$ and $\frac{dy}{dt} = v$, one gets
+\begin{align*}
+\frac{\partial f}{\partial x} u + \frac{\partial f}{\partial y} v + \frac{\partial f}{\partial t} = 0,
+\end{align*}
+or equivalently, by defining $\textbf{w} = (u,v)^T$, $\nabla f^T  \textbf{w} + f_t = 0$. Following the notation and terminology of Zimmer et al. \cite{zimmer2011optic}, the constraint coming from the brightness constancy assumption is called the data term $M(u,v)$.
+
+\section{Penalizing the Data Term}
+To minimize the data term above, Horn and Schunck used a quadratic penalizer, which is equivalent to least-squares minimization. Least-squares minimization is very sensitive to outliers. In the case of the data term, these outliers would be noise in the image (a pixel that jumps from low intensity to high intensity without corresponding to the motion of an object). Due to the poor robustness to outliers of least-squares minimization other penalization functions have been suggested. Black and Anandan \cite{Black199675} proposed several subquadratic penalizer functions, arguing that a subquadratic penalizer would improve the robustness in the presence of outliers. Letting
+\begin{align*}
+\rho(\textbf{w}) = \nabla f \cdot \textbf{w} + f_t
+\end{align*}
+and assuming the data term has some quadratic dependence on $\rho$, one can define
+\begin{align}
+\label{DataPenalize}
+M(u,v) = \Psi_M(\rho^2),
+\end{align}
+where $\Psi_M$ is some penalizing function aiming to minimize $\rho$. Since the flow consists of 2 components, the brightness constancy assumption alone is not enough to determine the flow, but only the components of the flow in the direction of the gradient, or what is known as the normal flow. This is called the Aperture problem, and to be able to compute the components of the flow vector one needs another constraint. This other constraint is known as the smoothness constraint.

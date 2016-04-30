@@ -1,0 +1,49 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%              Load external packages
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Language
+\usepackage[english]{babel}		
+\usepackage[utf8]{inputenc}
+
+% Fonts
+\usepackage[T1]{fontenc}
+\usepackage{kpfonts}
+\usepackage[defaultsans]{lato}
+\usepackage{eucal}
+
+% Style
+\usepackage[bindingoffset=1cm]{geometry}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage{float}
+\usepackage{fixltx2e}
+\usepackage[svgnames]{xcolor}
+
+% Functionality
+\usepackage{csquotes}
+\usepackage[pdftex]{graphicx}
+\usepackage[pdftex,ocgcolorlinks,colorlinks,linkcolor=DarkBlue,urlcolor=DarkGreen,citecolor=Black,linktoc=page,breaklinks]{hyperref}
+\usepackage[backend=bibtex8,style=authoryear,hyperref=true,url=false,isbn=true,backref=true,maxcitenames=3,maxbibnames=100,firstinits=true,block=ragged]{biblatex}
+\usepackage{makeidx}
+\usepackage{epstopdf}
+\usepackage{subfiles}
+
+% Macros
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{listings}
+\usepackage{braket}
+\usepackage{tensor}
+\usepackage{cleveref}
+\usepackage{bm}
+
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\Ginclude@eps}{"#1"}{#1}{}{}
+\makeatother
+
+

@@ -1,0 +1,58 @@
+\chapter{Testing content}
+\section{Test section}
+This section contains a few examples to demonstrate the most important macros.
+Let's start with a quick list:
+$\norm{A}$~is the norm,
+$\abs{A}$~is the absolute value,
+$\cc{A}$~is the complex conjugate,
+$\hc{A}$~is the hermitian conjugate,
+$\tc{A}$~is the matrix transpose,
+$\bra{\phi}$~is a bra vector,
+$\ket{\psi}$~is a ket vector,
+$\expect{A} = \braket{\phi|A|\psi}$ is a quantum expectation value,
+$\tensor{R}{_\mu^\nu_\rho^\sigma}$ is a tensor,
+$\comm{\mathbf{A}}{\mathbf{B}} \equiv \mathbf{A}\mathbf{B} - \mathbf{B}\mathbf{A}$ is a commutator, and $\anticomm{\mathbf{A}}{\mathbf{B}} \equiv \mathbf{A}\mathbf{B} + \mathbf{B}\mathbf{A}$ is an anticommutator.
+If you need to typeset for example radioactive isotopes, just use the notation% $\nuclide[235][92]{U}$.
+We can also write out a simple three-dimensional integral:
+\begin{align}
+	\label{eq:integral}
+	\int_{\mathbb{R}^3} \ds{r} f(\mathbf{r}) &= \int_0^{2\pi} \d\theta \int_0^\pi \d\phi \sin\phi \int_0^\infty r^2 f(r,\theta,\phi)
+\end{align}
+And how about a few differential equations:
+\begin{align}
+	\label{eq:diffeq}
+	\alpha \ddd{f}{x} + \beta \dd{f}{x} + \gamma f(x)  &= 0 &
+	 \nabla^2 \boldsymbol{\hat{\mathcal A}}(\mathbf x) &= \sum_{ij} \pd{\boldsymbol\alpha}{x_i} \cdot \pd{\boldsymbol\beta}{x_j}
+\end{align}
+And maybe a few matrices and a determinant as well:
+\begin{align}
+	\label{eq:matrices}
+	\mathbf{A} &= \begin{bmatrix} a & b \\ c & d \end{bmatrix} &
+	\mathbf{B} &= \begin{pmatrix} a & b \\ c & d \end{pmatrix} &
+	\mathbf{C} &= \begin{vmatrix} a & b \\ c & d \end{vmatrix} 
+\end{align}
+The rest of this chapter consists of the traditional \emph{Lorem impsum} example text, with occasional examples of figures, tables, and code listings.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut faucibus, tortor porta imperdiet vestibulum, tortor lorem congue odio, a auctor velit dui a velit. Integer interdum metus ut neque semper, in aliquet nunc tristique. Phasellus ut mi elementum, semper felis vitae, varius urna. Nulla eget malesuada lorem. Nullam pharetra, elit in porta elementum, risus mauris ultrices massa, eget cursus lacus lectus molestie tortor. Vivamus consequat tempor mi vitae mattis. Cras vitae porttitor tellus. Duis tristique, diam nec hendrerit pulvinar, nisl ante consectetur diam, ut sagittis felis purus ut elit. Proin non tellus volutpat, consectetur est ut, mollis augue. Vivamus sollicitudin, nisl vel egestas bibendum, purus tortor rutrum enim, nec porttitor quam turpis eget velit. Mauris lacinia quis mi ut luctus. Sed ut eros metus.\index{Amazing physics}
+
+Aenean vitae bibendum ligula, non cursus enim. Ut varius arcu nec nunc pulvinar, posuere mollis sem venenatis. Cras ullamcorper sollicitudin purus eu fermentum. Integer quis nulla eget leo viverra feugiat a eu turpis. Nam imperdiet nisl quis condimentum fermentum. Sed euismod diam egestas, varius magna et, aliquet metus. Nunc quis turpis mi. Maecenas feugiat facilisis ante vel porttitor. Aliquam eget metus sed lacus interdum vehicula at in nunc. Proin sit amet bibendum lorem. Nullam imperdiet at erat ultricies placerat. Sed ac dolor mollis, faucibus augue sed, lobortis tortor.\index{Beautiful figure}
+\includefigure[width=0.5\textwidth]{fig/test.jpg}{fig:test}{This is a test figure.}
+
+Sed id volutpat diam, at vestibulum dui. Mauris convallis justo nec neque luctus tincidunt. Donec vel ullamcorper nisi. Ut pulvinar quam non commodo lacinia. Nunc sollicitudin nibh eu malesuada egestas. Aenean euismod, sapien non molestie tincidunt, libero odio tempor massa, ac accumsan diam sapien sagittis magna. Donec non lectus turpis. Integer in consectetur ante. Nullam mollis suscipit ultricies. Ut auctor risus quis luctus euismod. Sed magna metus, mollis eget felis pretium, bibendum tempor sapien. Suspendisse sodales est sed tellus aliquam, quis bibendum orci laoreet. Sed consectetur justo metus, vitae tristique urna suscipit et. Curabitur id malesuada dui.\index{Interesting table}
+\begin{tab}{ccc}{tab:test}{This is a table caption.}
+	Something	&	Something else	& 	Something different	\\
+	\midrule
+	One		&		4.5	&	$\pi$			\\
+	Two		&		4.7	&	$e$			\\
+	Three		&		5.5	&	$\gamma$		\\
+\end{tab}
+
+Duis suscipit congue dolor, a tempus purus consequat sit amet. Sed a pulvinar eros. Phasellus ornare quam pulvinar, vestibulum justo vel, fringilla ipsum. Ut sagittis vehicula nunc, eu feugiat est vulputate vel. In vitae aliquam eros, et luctus dolor. Praesent varius ligula sit amet purus eleifend facilisis. Donec convallis, nisl vitae dignissim interdum, justo arcu convallis tortor, sit amet luctus ligula mi sit amet purus. Nullam congue neque in libero ultrices, a viverra turpis venenatis. Nullam at blandit ligula. Nunc non sodales nibh. Aliquam tempus arcu quis scelerisque convallis.\index{Efficient code}
+\begin{code}{C++}{code:test}{Here is the code caption...}
+	#include <iostream>
+	using namespace std;
+
+	cout << "Hello world!" << endl;
+\end{code}
+
+Vestibulum rutrum placerat dapibus. Donec vitae leo mollis, convallis lorem vitae, tincidunt eros. Sed eleifend non sem a euismod. Fusce vel tincidunt diam. Praesent nec tristique lectus. Suspendisse a quam bibendum, mattis magna sed, feugiat tortor. Aenean ipsum est, fermentum a dui euismod, aliquam tristique nisl. Integer a faucibus elit. Donec pharetra justo ut lorem convallis, ut dictum ligula accumsan. Suspendisse vitae nisl vel massa placerat fringilla at a metus. Integer sed volutpat urna, in rutrum erat. Fusce eget arcu pulvinar dui ullamcorper tincidunt in ut augue. Aliquam erat volutpat. Aliquam tempus arcu non sapien tincidunt, ac ornare justo pharetra. Donec dignissim porttitor ornare. Integer eget sodales diam.

@@ -1,0 +1,8 @@
+\chapter{The Smoothness Constraint}
+\sectionmark{The Smoothness Constraint}
+The smoothness constraint, also called the spatial coherence assumption \cite{Black199675}, says that points can not move independently in the brightness pattern. There has to be some smoothness in the flow vector for points belonging to the same object. In other words, points on the same object moves with the same velocity. A natural way of obtaining a smoother solution would be to minimize some term depending on the sizes of the gradients in some direction. The smoothness terms considered here will be quadratic with respect to the gradient in each direction, thus it is convenient to write the smoothness term in the form
+\begin{align}
+\label{SmoothnessTerm}
+V(\nabla u, \nabla v) = \nabla u ^T \Theta_u \nabla u + \nabla v ^T \Theta_v \nabla v.
+\end{align}
+The interpretation of the matrices $\Theta_u$ and $\Theta_v$ will become clear in the following section. 

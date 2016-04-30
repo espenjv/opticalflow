@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   The titlepage of the document
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+
+%-----------------------------
+% Title
+%-----------------------------
+\vspace{5em}
+
+\begin{center}
+{
+	\sffamily
+	\bfseries
+	\huge
+	\rule{\linewidth}{0.5mm}
+	\\[0.5em]
+	\thetitle
+	\\[0.5em]
+	\rule{\linewidth}{0.5mm}
+}
+\end{center}
+
+\vspace{1em}
+
+%------------------------------
+%  Author and supervisor
+%------------------------------
+{
+\centering
+\begin{minipage}{0.5\textwidth}
+{
+        \begin{flushleft}
+        \sffamily
+        \Large
+        Author:\\
+        \LARGE
+	\theauthor
+        \end{flushleft}
+}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+{
+        \begin{flushright}
+        \sffamily
+        \Large
+        Supervisor:\\
+        \LARGE
+	\thesupervisor
+        \end{flushright}
+}
+\end{minipage}
+}
+
+%-----------------------
+% Empty space
+%-----------------------
+\vfill
+
+%-----------------------
+% University and logo
+%----------------------- 
+\begin{center}
+        \includegraphics{fig/ntnu.pdf}
+\end{center}
+
+

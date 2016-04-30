@@ -1,0 +1,59 @@
+One drawback of the image-driven approach to regularization is that there is often a great deal of oversegmentation, since image boundaries are not necessarily flow boundaries. The so called flow-driven methods takes this into account, and decreases smoothing across flow edges instead of image edges. The subquadratic penaliser function of Schulman and Herv (1989) performs a nonlinear isotropic diffusion. The smoothness term can be written as
+\begin{align*}
+V_{IF}(\nabla u, \nabla v) &= \psi_V \left( |\nabla u|^2 + |\nabla v|^2 \right) \\ 
+&= \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right),
+\end{align*} 
+where $\psi_V(s^2)$ is some penaliser function. The contribution to (\ref{EL}) is $\nabla \cdot (\partial_{u_x} V, \partial_{u_y} V)$. Computing the individual components, we get
+\begin{align*}
+\partial_{u_x} V = 2 \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) u_x \\
+\partial_{u_y} V = 2 \psi_V \left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) u_y,
+\end{align*}
+and equivalent for $(\partial_{v_x} V, \partial_{v_y} V)$. Thus the diffusion matrix of (\ref{EL_regu}) is given as
+\begin{align*}
+\Theta_{IF} = 2 \psi_V'\left( u_{\textbf{s}_1}^2 + u_{\textbf{s}_2}^2 + v_{\textbf{s}_1}^2 + v_{\textbf{s}_2}^2 \right) I,
+\end{align*}
+where $I$ is the identity matrix, which is seen to be a function of the flow gradient. As a convex penaliser, Cohen (1993) suggested the following total variation regulariser:
+\begin{align*}
+\psi_V(s^2) = \sqrt{s^2 + \epsilon^2},
+\end{align*} 
+which gives
+\begin{align*}
+\psi_V'(s^2) = \frac{1}{2 \sqrt{s^2 + \epsilon^2}}.
+\end{align*}
+This penaliser function results in the following Euler-Lagrange system
+\begin{equation}
+\begin{aligned}
+\label{EL_LD}
+\partial_u M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{u_x}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{u_y}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] \right) = 0 \\
+\partial_v M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{v_x}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{v_y}{\sqrt{|\nabla u|^2 + |\nabla v|^2}} \right] \right) = 0,
+\end{aligned}
+\end{equation}
+which is clearly a non-linear system. \cite{LaggedDiff}
+
+
+\subsection{The Lagged Diffusivity Fixed Point Method}
+The non-linear system (\ref{EL_LD}) can be solved using the method of lagged diffusivity, which is a fixed point scheme that can be traced back to Weiszfeld's method of minimizing Euclidean lengths, and for which global and linear convergence can be proven (Chan et. al. 1999). From (\ref{EL_LD}) we can define the fixed point method as
+\begin{align*}
+\partial_{u^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{u^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{u^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) &= 0 \\
+\partial_{v^{k+1}} M - \frac{1}{\sigma^2} \left(\frac{\partial}{\partial x}\left[ \frac{v^{k+1}_x}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] + \frac{\partial}{\partial y} \left[ \frac{v^{k+1}_y}{\sqrt{|\nabla u^k|^2 + |\nabla v^k|^2}} \right] \right) &= 0,
+\end{align*}
+where we solve for $u^{k+1}$ and $v^{k+1}$ given $u^k$ and $v^k$ from the previous iteration. This is a linear system in each iteration, and it can be solved in the same manner as the previous methods. The system to be solved at iteration $k+1$ is
+\begin{align*}
+(D^T D + \frac{1}{\sigma^2} L^T\Theta^{k}L) \textbf{w}^{k+1} = - D^T \textbf{c},
+\end{align*}
+where $\Theta^k$ is the following 4mn-by-4mn diagonal block matrix
+\begin{align*}
+\Theta^k = \left[
+\begin{array}{c|c|c|c}
+\chi^k & 0 & 0 & 0 \\ \hline
+0 & \chi^k & 0 & 0 \\ \hline
+0 & 0 & \chi^k & 0 \\ \hline
+0 & 0 & 0 & \chi^k
+\end{array}
+\right].
+\end{align*}
+The submatrix $\chi^k$ is the mn-by-mn diagonal matrix with the values 
+\begin{align*}
+\chi^k_i = 2 \psi_V'\left( \left[u^k_{\textbf{s}_1}(x^i)\right]^2 + \left[u^k_{\textbf{s}_2}(x^i)\right]^2 + \left[v^k_{\textbf{s}_1}(x^i)\right]^2 + \left[v^k_{\textbf{s}_2}(x^i)\right]^2 \right)
+\end{align*}
+along its diagonal.

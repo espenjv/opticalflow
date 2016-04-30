@@ -1,6 +1,5 @@
 import NE_method as ID
-
-
+import subquadraticData as sq
 import HS_method as HS
 import numpy as np
 from matplotlib import pyplot as plt
@@ -43,7 +42,7 @@ def makeDiffusionMatrix(s1,s2,grad_w,m,n,eps):
 
     return V
 
-def findFlow(g,c,regu):
+def findFlow(g,m,n,c,regu,Diff_method,data_penalize):
     # Finds the flow vector for the image and flow driven method using lagged
     # diffusivity iteration scheme
     # Parameters: g: image
@@ -51,42 +50,82 @@ def findFlow(g,c,regu):
     #            regu: global scale regularization
     # Returns     w: flow vector
 
-    # regularization parameter in the convex penaliser function (flow driven)
-    eps = 0.001
-    [m,n] = g.shape
-    D = HS.makeDmatrix(g)
-    L = HS.makeLmatrix(m,n)
-    M = (D.T).dot(D)
-    # RHS
-    b = -(D.T).dot(c)
-    # Initial flow values
-    w = np.zeros(2*m*n)
+    if data_penalize is 'quadratic':
 
-    # Directions nomal to edges and parallel to edges
-    [s1,s2] = ID.dirDeriv(g)
-    # Flow derivatives
-    grad_w = L.dot(w)
-    # Diffusion matrix
-    Dif = makeDiffusionMatrix(s1,s2,grad_w,m,n,eps)
-    # Smoothness term, div(Dif*grad(w))
-    V = (L.T).dot(Dif.dot(L))
+        # regularization parameter in the convex penaliser function (flow driven)
+        eps = 0.001
+        D = HS.makeDmatrix(g,m,n,Diff_method)
+        L = HS.makeLmatrix(m,n)
+        M = (D.T).dot(D)
+        # RHS
+        b = -(D.T).dot(c)
+        # Initial flow values
+        w = np.zeros(2*m*n)
 
-    del_w = 1
-    iter_nr = 0
-    iter_max = 20
-    # Lagged Diffusivity iteration:
-    while np.max(del_w) > math.pow(10,-4) and iter_nr <iter_max:
-        print iter_nr
-        iter_nr += 1
-        G = M + math.pow(regu,-2)*V
-        w_new = spsolve(G,b)
-
-        grad_w = L.dot(w_new)
+        # Directions nomal to edges and parallel to edges
+        [s1,s2] = ID.dirDeriv(g,m,n)
+        # Flow derivatives
+        grad_w = L.dot(w)
+        # Diffusion matrix
         Dif = makeDiffusionMatrix(s1,s2,grad_w,m,n,eps)
+        # Smoothness term, div(Dif*grad(w))
         V = (L.T).dot(Dif.dot(L))
 
-        del_w = abs(w_new - w)
+        del_w = 1
+        iter_nr = 0
+        iter_max = 20
+        # Lagged Diffusivity iteration:
+        while np.max(del_w) > math.pow(10,-4) and iter_nr <iter_max:
+            print iter_nr
+            iter_nr += 1
+            G = M + math.pow(regu,-2)*V
+            w_new = spsolve(G,b)
 
-        w = w_new
+            grad_w = L.dot(w_new)
+            Dif = makeDiffusionMatrix(s1,s2,grad_w,m,n,eps)
+            V = (L.T).dot(Dif.dot(L))
 
-    return w
+            del_w = abs(w_new - w)
+
+            w = w_new
+
+        return w
+
+    elif data_penalize is 'subquadratic':
+            # regularization parameter in the convex penaliser function (flow driven)
+            eps = 0.001
+            D = HS.makeDmatrix(g,m,n,Diff_method)
+            L = HS.makeLmatrix(m,n)
+            # Initial flow values
+            w = np.zeros(2*m*n)
+
+            [M,b] = sq.makeSubquadratic(w,m,n,c,D,eps)
+
+            # Directions nomal to edges and parallel to edges
+            [s1,s2] = ID.dirDeriv(g,m,n)
+            # Flow derivatives
+            grad_w = L.dot(w)
+            # Diffusion matrix
+            Dif = makeDiffusionMatrix(s1,s2,grad_w,m,n,eps)
+            # Smoothness term, div(Dif*grad(w))
+            V = (L.T).dot(Dif.dot(L))
+
+            del_w = 1
+            iter_nr = 0
+            iter_max = 20
+            # Lagged Diffusivity iteration:
+            while np.max(del_w) > math.pow(10,-4) and iter_nr <iter_max:
+                print iter_nr
+                iter_nr += 1
+                G = M + math.pow(regu,-2)*V
+                w_new = spsolve(G,b)
+                [M,b] = sq.makeSubquadratic(w_new,m,n,c,D,eps)
+                grad_w = L.dot(w_new)
+                Dif = makeDiffusionMatrix(s1,s2,grad_w,m,n,eps)
+                V = (L.T).dot(Dif.dot(L))
+
+                del_w = abs(w_new - w)
+
+                w = w_new
+
+            return w
