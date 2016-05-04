@@ -42,7 +42,7 @@ def makeDiffusionMatrix(s1,s2,grad_w,m,n,eps):
 
     return V
 
-def findFlow(g,m,n,c,regu,Diff_method,data_penalize):
+def findFlow(g,m,n,c,regu,Diff_method,data_penalize,sigma_regTensor):
     # Finds the flow vector for the image and flow driven method using lagged
     # diffusivity iteration scheme
     # Parameters: g: image
@@ -63,7 +63,7 @@ def findFlow(g,m,n,c,regu,Diff_method,data_penalize):
         w = np.zeros(2*m*n)
 
         # Directions nomal to edges and parallel to edges
-        [s1,s2] = ID.dirDeriv(g,m,n)
+        [s1,s2,trace] = ID.dirDeriv(g,m,n,sigma_regTensor)
         # Flow derivatives
         grad_w = L.dot(w)
         # Diffusion matrix
@@ -79,6 +79,7 @@ def findFlow(g,m,n,c,regu,Diff_method,data_penalize):
             print iter_nr
             iter_nr += 1
             G = M + math.pow(regu,-2)*V
+            [G,b] = HS.neumann_boundary(G,b,m,n)
             w_new = spsolve(G,b)
 
             grad_w = L.dot(w_new)
@@ -102,7 +103,7 @@ def findFlow(g,m,n,c,regu,Diff_method,data_penalize):
             [M,b] = sq.makeSubquadratic(w,m,n,c,D,eps)
 
             # Directions nomal to edges and parallel to edges
-            [s1,s2] = ID.dirDeriv(g,m,n)
+            [s1,s2,trace] = ID.dirDeriv(g,m,n,sigma_regTensor)
             # Flow derivatives
             grad_w = L.dot(w)
             # Diffusion matrix

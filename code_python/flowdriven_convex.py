@@ -49,6 +49,7 @@ def findFlow(g,c,regu,Diff_method):
         print iter_nr
         iter_nr += 1
         G = M + math.pow(regu,-2)*V
+        [G,b] = HS.neumann_boundary(G,b,m,n)
         w_new = spsolve(G,b)
         grad_w = L.dot(w_new)
 

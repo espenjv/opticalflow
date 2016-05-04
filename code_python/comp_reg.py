@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy import misc, ndimage,sparse, signal
 from scipy.sparse.linalg import spsolve,eigsh
-from multiprocessing import Pool
+# from multiprocessing import Pool
 
 
 def makeDiffusionMatrix(r1,r2,grad_w,m,n,lam):
@@ -115,9 +115,9 @@ def regTensorEigenvector(g,m,n):
     # Dyx = Dxy
 
     # Normalisation terms
-    theta_0 = np.power(Dx,2) + np.power(Dy,2)
-    theta_x = np.power(Dxx,2) + np.power(Dxy,2)
-    theta_y = np.power(Dyx,2) + np.power(Dyy,2)
+    theta_0 = np.power(Dx,2) + np.power(Dy,2) + k
+    theta_x = np.power(Dxx,2) + np.power(Dxy,2) + k
+    theta_y = np.power(Dyx,2) + np.power(Dyy,2) + k
 
 
     # Auxiliary vectors

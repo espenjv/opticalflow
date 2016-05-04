@@ -1,3 +1,5 @@
+\chapter{The Isotropic Flow Driven Method}
+\sectionmark{The Isotropic Flow Driven Method}
 One drawback of the image-driven approach to regularization is that there is often a great deal of oversegmentation, since image boundaries are not necessarily flow boundaries. The so called flow-driven methods takes this into account, and decreases smoothing across flow edges instead of image edges. The subquadratic penaliser function of Schulman and Herv (1989) performs a nonlinear isotropic diffusion. The smoothness term can be written as
 \begin{align*}
 V_{IF}(\nabla u, \nabla v) &= \psi_V \left( |\nabla u|^2 + |\nabla v|^2 \right) \\ 

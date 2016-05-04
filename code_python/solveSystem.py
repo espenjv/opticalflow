@@ -15,15 +15,20 @@ import math
 
 method = 'HS'
 diff_method = 'forward'
-data_penalize = 'subquadratic'
-savefigure =  1 # To save figure displayfigure must be TRUE
+data_penalize = 'quadratic'
+MotionTerm = 'GCA'
+
+savefigure =  0 # To save figure displayfigure must be TRUE
 savefig_dir = '/home/shomec/e/espenjv/Semester Project/Figures/'
 displayfigure = 1
 
 # Global scale regularization
-regu = 0.03
+regu = 0.1
 #image_dir = 'C:/Users/Espen/opticalflow/HamburgTaxi/'
 image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
+
+gamma = 0.01
+sigma_regTensor = 0
 
 g1 = misc.imread(image_dir+'taxi-00.tif')
 g2 = misc.imread(image_dir+'taxi-01.tif')
@@ -34,9 +39,15 @@ g1 = np.array(g1, dtype=np.double)
 g2 = np.array(g2, dtype=np.double)
 g3 = np.array(g3, dtype=np.double)
 
-sigma = 0.5
-g1 = ndimage.filters.gaussian_filter(g1,sigma)
-g2 = ndimage.filters.gaussian_filter(g2,sigma)
+# g = np.array([g1, g2, g3])
+
+sigma_image = 0.5
+# sigma_image_time = 0.5
+# g = ndimage.filters.gaussian_filter(g,[sigma_image_time,sigma_image_space,sigma_image_space])
+g1 = ndimage.filters.gaussian_filter(g1,sigma_image)
+g2 = ndimage.filters.gaussian_filter(g2,sigma_image)
+# g1 = g[0]
+# g2 = g[1]
 
 [m,n] = g1.shape
 
@@ -46,26 +57,33 @@ g3 = np.reshape(g3.T,[1,m*n])[0]
 
 # Time discretization: Forward difference, time step = tau
 tau = 1
-c = np.subtract(g2,g1)/(tau)
 g = g1
 
 if method is 'HS':
-    # Using Horn and Schunck method
-	# D-matrix from model term
-	D = HS.makeDmatrix(g,m,n,diff_method)
-	# Model term
-	M = (D.T).dot(D);
-    # Smoothness term
-	V = HS.smoothnessHS(m,n)
-    # Model + smoothness
-	# M,b = HS.makeModelTerm(g1,g2,m,n,diff_method)
-	G = M + math.pow(regu,-2)*V
-    # RHS
-	b = -(D.T).dot(c)
-    # Flow vector
-	w = spsolve(G,b)
-elif method is 'subquad':
-	w = SQ.subquadraticData(g,m,n,c,regu,diff_method)
+    # Using Horn and Schunck Smoothness term
+	if data_penalize is 'quadratic':
+		V = HS.smoothnessHS(m,n)
+		if MotionTerm is 'BCA':
+			# D-matrix from model term
+			D = HS.makeDmatrix(g,m,n,diff_method)
+			# Model term
+			M = (D.T).dot(D);
+			# Model + smoothness
+			G = M + math.pow(regu,-2)*V
+			# RHS
+			gt = np.subtract(g2,g1)/(tau)
+			b = -(D.T).dot(gt)
+			[G,b] = HS.neumann_boundary(G,b,m,n)
+			# Flow vector
+			w = spsolve(G,b)
+		elif MotionTerm is 'GCA':
+			M,b = HS.makeModelTerm(g1,g2,m,n,diff_method,gamma)
+			G = M + math.pow(regu,-2)*V
+			[G,b] = HS.neumann_boundary(G,b,m,n)
+			# Flow vector
+			w = spsolve(G,b)
+	if data_penalize is 'subquadratic':
+		w = SQ.subquadraticData(g1,g2,m,n,regu,diff_method,MotionTerm,gamma)
 elif method is 'ID':
 	# Using Nagel and Enkelmann image driven method
 	# Regularization parameter
@@ -75,11 +93,13 @@ elif method is 'ID':
 	# Model term
 	M = (D.T).dot(D);
 	# Smoothness term
-	V = NE.smoothnessNE(g,m,n,kappa)
+	V = NE.smoothnessNE(g,m,n,kappa,sigma_regTensor)
 	# Model + smoothness
 	G = M + math.pow(regu,-2)*V
 	# RHS
 	b = -(D.T).dot(c)
+	# Boundary conditions
+	[G,b] = HS.neumann_boundary(G,b,m,n)
 	# Flow vector
 	w = spsolve(G,b)
 elif method is 'FD':
@@ -104,5 +124,5 @@ if displayfigure:
 	plt.axis('off')
 	plt.title('Method: ' + method + ', diff_method: ' + diff_method + ', regu: ' + str(regu))
 	if savefigure:
-		plt.savefig(savefig_dir+method + diff_method + str(regu) + '.png',bbox_inches = 'tight')
+		plt.savefig(savefig_dir+method + diff_method + str(regu)[2:] + '.pdf',bbox_inches = 'tight')
 	plt.show()

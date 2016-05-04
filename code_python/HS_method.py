@@ -73,8 +73,8 @@ def imageDiff(g,m,n):
     Dy = np.reshape(Dy.T,[1,m*n])[0]
     return Dx,Dy
 
-def makeModelTerm(g1,g2,m,n,diff_method):
-    k = 0.1
+def makeModelTerm(g1,g2,m,n,diff_method,gamma):
+    k = 20
     g = g1
 
     if diff_method is 'forward':
@@ -82,9 +82,9 @@ def makeModelTerm(g1,g2,m,n,diff_method):
         [gxx,gxy] = forwardDifferenceImage(gx,m,n)
         [gyx,gyy] = forwardDifferenceImage(gy,m,n)
 
-        # [g2x,g2y] = forwardDifferenceImage(g2,m,n)
-        # [g2xx,g2xy] = forwardDifferenceImage(g2x,m,n)
-        # [g2yx,g2yy] = forwardDifferenceImage(g2y,m,n)
+        [g2x,g2y] = forwardDifferenceImage(g2,m,n)
+        [g2xx,g2xy] = forwardDifferenceImage(g2x,m,n)
+        [g2yx,g2yy] = forwardDifferenceImage(g2y,m,n)
     elif diff_method is 'central1':
         [gx, gy] = centralDifferenceImage1(g,m,n)
         [gxx, gxy] = centralDifferenceImage1(gx,m,n)
@@ -99,8 +99,10 @@ def makeModelTerm(g1,g2,m,n,diff_method):
         [gyx, gyy] = imageDiff(gy,m,n)
 
     gt = np.subtract(g2,g1)
-    # gxt = np.subtract(g2x,gx)
-    # gyt = np.subtract(g2y,gy)
+    gxt = np.subtract(g2x,gx)
+    gyt = np.subtract(g2y,gy)
+
+    # plt.plot(np.sqrt(np.power(gx,2) + np.power(gy,2)))
 
     # Normalisation terms
     theta_0 = np.sqrt(np.power(gx,2) + np.power(gy,2) + k**2)
@@ -121,15 +123,12 @@ def makeModelTerm(g1,g2,m,n,diff_method):
 
     #
     # # Model term
-    M = (grad_g.T).dot(grad_g)
-    #  + (grad_gx.T).dot(grad_gx) + (grad_gy.T).dot(grad_gy)
+    M = ((grad_g + grad_gx + grad_gy).T).dot(grad_g + gamma*(grad_gx + grad_gy))
     # # RHS
-    b = -M.dot((grad_g.T).dot(np.divide(gt,theta_0)))
-    # -(grad_gx.T).dot(np.divide(gxt,theta_x)) -(grad_gy.T).dot(np.divide(gyt,theta_y))
+    b = - ((grad_g + grad_gx + grad_gy).T).dot(np.divide(gt,theta_0) + gamma*(np.divide(gxt,theta_x) + np.divide(gyt,theta_y)))
+    # b = -M.dot((grad_g.T).dot(np.divide(gt,theta_0))) -(grad_gx.T).dot(np.divide(gxt,theta_x)) -(grad_gy.T).dot(np.divide(gyt,theta_y))
 
     return M,b
-
-
 
 
 
@@ -149,17 +148,6 @@ def makeDmatrix(g,m,n,diff_method):
     elif diff_method is 'sobel':
         [dx, dy] = imageDiff(g,m,n)
 
-    # [m,n] = g.shape
-    # Dx = np.reshape(dx.T,[n,m]).T
-    # plt.figure()
-    # plt.imshow(Dx)
-    # plt.show()
-    #
-    # Dy = np.reshape(dy.T,[n,m]).T
-    # plt.figure()
-    # plt.imshow(Dy)
-    # plt.show()
-
     Dx = sparse.diags(dx,0,format='csr')
     Dy = sparse.diags(dy,0,format='csr')
     D = sparse.hstack((Dx,Dy),format='csr')
@@ -177,14 +165,32 @@ def makeLmatrix(m,n):
     k = 0.00001
     # Lx = sparse.kron(sparse.eye(n),sparse.hstack((sparse.eye(m),np.zeros((m,m)))),format = 'csr') + sparse.kron(sparse.eye(n),sparse.hstack((np.zeros((m,m)),-sparse.eye(m))), format = 'csr')
     Lx = sparse.diags([-np.ones(m*n),np.ones((n-1)*m)],[0,m],format = 'lil')
-    Lx[:m,:2*m] = np.zeros(m,2*m)
-    Lx[m*(n-1):m*n,m*(n-1):m*n] = np.zeros((m,m))
+    # Lx[:m,:2*m] = np.zeros(m,2*m)
+    # Lx[m*(n-1):m*n,m*(n-1):m*n] = np.zeros((m,m))
     Ly1 = sparse.diags([-np.ones(m), np.ones(m-1)],[0,1],format = 'lil')
-    Ly[0,:2] = [0,0]
-    Ly1[m-1,:] = np.zeros(m)
+    # Ly[0,:2] = [0,0]
+    # Ly1[m-1,:] = np.zeros(m)
     Ly = sparse.kron(sparse.eye(n),Ly1,format = 'csr')
     L = sparse.kron(sparse.eye(2),sparse.vstack((Lx,Ly)),format = 'csr')
     return L
+
+def neumann_boundary(G,b,m,n):
+    neumann_x = sparse.hstack((sparse.diags(-np.ones(m),0),sparse.diags(np.ones(m),0)))
+    neumann_y = np.zeros((m,m))
+    neumann_y[0,:2] = [-1,1]
+    neumann_y[m-1,m-2:m] = [-1,1]
+    neumann_y = sparse.kron(sparse.eye(n-2),neumann_y)
+    neumann = sparse.block_diag((sparse.diags(-np.ones(m),0),neumann_y,sparse.diags(-np.ones(m),0)),format='lil')
+    neumann[:m,m:2*m] = sparse.diags(np.ones(m),0)
+    neumann[m*(n-1):m*n,(n-2)*m:(n-1)*m] = sparse.diags(np.ones(m),0)
+    elim_y = np.ones(m)
+    elim_y[0] = 0
+    elim_y[m-1] = 0
+    elimination_vector = np.hstack((np.hstack((np.zeros(m),np.kron(np.ones((n-2)),elim_y))),np.zeros(m)))
+    elimination_vector = np.kron(np.ones(2),elimination_vector)
+    G = sparse.diags(elimination_vector,0).dot(G) + sparse.kron(sparse.eye(2),neumann)
+    b = elimination_vector*b
+    return G,b
 
 def smoothnessHS(m,n):
     # Computes the smoothness term of Horn and Schunck.
@@ -201,7 +207,6 @@ def forwardDifferenceImage(g,m,n):
     #forward difference
     # Boundaries: zero first derivatives
 
-    # TODO NEUMANN BOUNDARY CONDITIONS
 
     Lx = sparse.diags([-np.ones(m*n),np.ones((n-1)*m)],[0,m],format = 'lil')
     Lx[m*(n-1):m*n,m*(n-1):m*n] = np.zeros((m,m))

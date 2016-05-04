@@ -107,11 +107,20 @@ g = g1
 
 v = (np.array([1, 2, 3])).T
 u = np.array([2, 1, 4]).T
-print u.shape
-print np.multiply(u,v)
-print (u).dot((v.T))
-print np.power(v,2)
 
+print np.kron(np.ones(3),v)
+# print u.shape
+# print np.multiply(u,v)
+# print (u).dot((v.T))
+# print np.power(v,2)
+
+neumann_x = sparse.hstack((sparse.diags(-np.ones(m),0),sparse.diags(np.ones(m),0)))
+neumann_y = np.zeros((m,m))
+neumann_y[0,:2] = [-1,1]
+neumann_y[m-1,m-2:m] = [-1,1]
+print neumann_x
+neumann = sparse.block_diag((neumann_x,neumann_y,neumann_x))
+print neumann
 #
 # lam = 0.0001
 # D = HS.makeDmatrix(g)

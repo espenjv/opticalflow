@@ -1,0 +1,91 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%        Configuration of the document
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Load document class and preamble
+\documentclass[a4paper,twoside,11pt]{memoir}
+\input{preamble/include}
+\input{preamble/macro}
+\input{preamble/style}
+\input{preamble/input}
+
+% Activate bibliography
+\addbibresource{library.bib}
+
+% Activate index generation
+\makeindex
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%        Load the contents of the document
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+	\graphicspath{{/home/shomec/e/espenjv/Semester Project/Figures/}}
+	\numberwithin{lstlisting}{chapter}
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Metadata
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\title{Catchy Title}
+	\author{Espen Johansen Velsvik}
+	\supervisor{Markus Grasmair}
+	
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Preliminaries
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\frontmatter
+	\pdfbookmark{Titlepage}{Titlepage}
+        \include{preliminaries/titlepage}
+	\clearpage
+
+	\pdfbookmark{\abstractname}{\abstractname}
+	\include{preliminaries/abstract}
+	\clearpage
+
+	\pdfbookmark{\contentsname}{\contentsname}
+	\tableofcontents*
+	\clearpage
+	\include{preliminaries/preface}
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Chapters
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\mainmatter
+	\setcounter{secnumdepth}{2}
+	
+	\include{chapters/Introduction}
+	\include{chapters/BCA}
+	\include{chapters/SmoothnessConstraint}
+	\include{chapters/VariationalFormulation}
+	\include{chapters/HSMethod}
+	\include{chapters/AnisotropicImageDriven}
+	\include{chapters/IsotropicFlowDriven}
+	\include{chapters/ImageAndFlowDriven}
+	\include{chapters/RotationalInvariant}
+%%	\include{chapters/test-content}
+%%	\include{chapters/test-reference}
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Appendices
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\appendix
+	%\include{appendices/test-appendix}
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Bibliography and index
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\backmatter
+        \begingroup
+        \emergencystretch 1.5em
+	\printbibliography
+        \endgroup
+	\printindex
+\end{document}

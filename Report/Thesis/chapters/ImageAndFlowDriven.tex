@@ -1,0 +1,32 @@
+\chapter{Image- and Flow-Driven Regularization}
+\sectionmark{Image and Flow-Driven Regularization}
+
+The image driven methods smooths the flow field along image boundaries, that is in the direction of $\nabla f ^{\perp}$, while flow driven methods aims to decrease the smoothing at flow boundaries. Sun et al. \cite{Sun2008} combined these two methods to construct an anisotropic image- and flow-driven regularizer in a statistical learning framework.
+\section{The Anisotropic regularizer}
+The continuous regularizer as presented by Zimmer et al. \cite{zimmer2011optic} is as follows:
+\begin{align}
+\label{IFRegularizer}
+V(\nabla u, \nabla v) = \psi_V(u_{\textbf{s}_1}^2) + \psi_V(u_{\textbf{s}_2}^2) + \psi_V(v_{\textbf{s}_1}^2) +\psi_V(v_{\textbf{s}_2}^2).
+\end{align}
+This regularizer smooths the flow field along image boundaries, but steers the smoothing strength according to the flow edges. Let $\textbf{s}_i = [s_{i1}, s_{i2}]^T$. The contribution to the Euler-Lagrange system for $q \in u,v$ is
+\begin{align*}
+&\partial_x (\partial_{q_x} V) + \partial_y (\partial_{q_y} V) \\
+&= 2\partial_x \left( \psi_V'(q_{\textbf{s}_1}^2)q_{\textbf{s}_1}s_{11} +\psi_V'(q_{\textbf{s}_2}^2)q_{\textbf{s}_2}s_{21} \right) + 2\partial_y \left( \psi_V'(q_{\textbf{s}_1}^2)q_{\textbf{s}_1}s_{12} + \psi_V'(q_{\textbf{s}_2}^2)q_{\textbf{s}_2}s_{22} \right),
+\end{align*}
+which can be written as
+\begin{align*}
+&2 \nabla^T \begin{bmatrix}
+         \psi_V'(q_{\textbf{s}_1}^2)\left(s_{11}^2 q_x + s_{11}s_{12}q_y\right) +\psi_V'(q_{\textbf{s}_2}^2) \left( s_{21}^2 q_x + s_{21}s_{22}q_y \right) \\
+         \psi_V'(q_{\textbf{s}_1}^2)\left(s_{11}s_{12}q_x + s_{12}^2 q_y \right) + \psi_V'(q_{\textbf{s}_2}^2) \left( s_{21}s_{22}q_x + s_{22}^2q_y \right) \\
+        \end{bmatrix} \\
+& = 2 \nabla^T \left( \psi_V'(q_{\textbf{s}_1}^2) \textbf{s}_1^T \textbf{s}_1 \nabla q + \psi_V'(q_{\textbf{s}_2}^2) \textbf{s}_2^T \textbf{s}_2 \nabla q \right) \\
+& = 2 \nabla^T \left( \psi_V'(q_{\textbf{s}_1}^2) \textbf{s}_1^T \textbf{s}_1 + \psi_V'(q_{\textbf{s}_2}^2) \textbf{s}_2^T \textbf{s}_2 \right) \nabla q.
+\end{align*}
+From the expression above one can conclude that the diffusion matrix of equation (\ref{EL_regu}) is 
+\begin{align}
+\Theta_q = \psi_V'(q_{\textbf{s}_1}^2) \textbf{s}_1^T \textbf{s}_1 + \psi_V'(q_{\textbf{s}_2}^2) \textbf{s}_2^T \textbf{s}_2
+\end{align}
+for $q \in u, v$ with the vectors $\textbf{s}_1$ and $\textbf{s}_2$ given in (\ref{ID_smoothingDir}).
+
+\section{TV functional as a Convex regularizer}
+Now, choosing.... (TV functional, discretization, lagged diffusivity...)

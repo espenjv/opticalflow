@@ -8,7 +8,7 @@ which is equivalent to choosing
 \begin{align*}
 \Psi_M(\rho^2) = \rho^2
 \end{align*}
-in the framework of (\ref{DataPenalize}). The contribution to (\ref{EL}) from the model term is thus 
+in the framework of (\ref{DataPenalize}). The contribution to (\ref{EL}) from the data term is thus 
 \begin{equation}
 \begin{aligned}
 \partial_{\textbf{w}} M = 2\nabla f(\nabla f ^T  \textbf{w} + f_t)
@@ -108,35 +108,43 @@ $D_x$ and $D_y$ are diagonal matrices with the elements of $\textbf{d}_x(\xi^i)$
 \alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} \left[ L_x^T \left( v(\xi^i)-v(\xi^{(i+m)}) \right) + L_y^T \left( v(\xi^i)-v(\xi^{(i+1)}) \right) \right] &= 0,
 \end{align*}
 but since the derivative on the boundary is zero, one must enforce that $-L_x^Tq(\xi^{i+m}) = 0$ for $q = u,v$. This leads to
-\begin{align*}
+\begin{align}
+\label{neumann1}
 u(\xi^i) &= u(\xi^{(i+m)})  \\
+\label{neumann2}
 v(\xi^i) &= v(\xi^{(i+m)}) 
-\end{align*}
+\end{align}
  so
 \begin{align*}
 \alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2} L_y^T L_y u(\xi^i) &= 0 \\
 \alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} L_y^T L_y v(\xi^i)  &= 0.
 \end{align*}
 Equivalently when $(\xi^{i+1}) \in \Gamma_S$,
-\begin{align*}
+\begin{align}
+\label{neumann3}
 u(\xi^i) &= u(\xi^{(i+1)})  \\
+\label{neumann4}
 v(\xi^i) &= v(\xi^{(i+1)}) 
-\end{align*}
+\end{align}
 which results in the following equations:
 \begin{align*}
 \alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2} L_x^T L_x u(\xi^i) &= 0 \\
 \alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} L_x^T L_x v(\xi^i) &= 0.
 \end{align*}
 On the two other boundaries $\Gamma_W$ and $\Gamma_N$, enforcing the forward differences to be zero at $(\xi^i) \in \Gamma_W$ leads to
-\begin{align*}
+\begin{align}
+\label{neumann5}
 u(\xi^i) &= u(\xi^{(i+m)})  \\
+\label{neumann6}
 v(\xi^i) &= v(\xi^{(i+m)}), 
-\end{align*}
+\end{align}
 and likewise for $(\xi^i) \in \Gamma_N$,
-\begin{align*}
+\begin{align}
+\label{neumann7}
 u(\xi^i) &= u(\xi^{(i+1)})  \\
-v(\xi^i) &= v(\xi^{(i+1)}),.
-\end{align*}
+\label{neumann8}
+v(\xi^i) &= v(\xi^{(i+1)}).
+\end{align}
 
 
 %The submatrix $L_x \in \mathbb{R}^{(m-2)(n-2) \times (m-2)(n-2)}$ is the block diagonal matrix
@@ -163,7 +171,10 @@ v(\xi^i) &= v(\xi^{(i+1)}),.
 %The matrix multiplication with $L$ gives a forward difference approximation, and $-L^T$ gives a backward difference approximation. The matrix product $-L^TL$ is then the discretization of the second derivative in (\ref{EL_HS}).
 
 \section{Results for the Horn and Schunck method}
-The results when running the Horn and Schunck algorithm on our test images shown in Figures \ref{taxi1} and \ref{taxi2} for different regularization parameters are shown in Figure \ref{reguHS}. The choice of regularization parameter depends on the application, but one often want to get rid of most of the internal structure in each object, since these points will be moving with the same velocity (when assuming no deformation of the object). One also want to have a good enough balance between segmentation and smoothing. It is seen that choosing $\sigma = 0.003$ gives a fairly good segmentation of the objects that are moving, and with almost no internal structure. The flow field with this choice of regularization parameter is shown in Figure \ref{reguHS_best} on its own. The Horn and Schunck smoothes the flow in all directions, and the flow boundaries are therefore a bit smudged. 
+
+Results for the HS method.... quadratic and subquadratic penaliser
+
+%The results when running the Horn and Schunck algorithm on our test images shown in Figures \ref{taxi1} and \ref{taxi2} for different regularization parameters are shown in Figure \ref{reguHS}. The choice of regularization parameter depends on the application, but one often want to get rid of most of the internal structure in each object, since these points will be moving with the same velocity (when assuming no deformation of the object). One also want to have a good enough balance between segmentation and smoothing. It is seen that choosing $\sigma = 0.003$ gives a fairly good segmentation of the objects that are moving, and with almost no internal structure. The flow field with this choice of regularization parameter is shown in Figure \ref{reguHS_best} on its own. The Horn and Schunck smoothes the flow in all directions, and the flow boundaries are therefore a bit smudged. 
 
 
 \begin{figure}
@@ -182,12 +193,12 @@ The results when running the Horn and Schunck algorithm on our test images shown
 \end{minipage}
 \end{figure}
 
-%\begin{figure}
-%    \centering
-%    \includegraphics[scale=0.8]{regularizationHS}
-%    \caption{Different choices for regularization parameter $\sigma$ using the Horn and Schunck algorithm}
-%    \label{reguHS}
-%\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{{"/home/shomec/e/espenjv/Semester Project/Figures/HSforward03"}.pdf}
+    \caption{Result for Horn and Schunck with regularization 0.3 and quadratic data term penalization.}
+    \label{reguHS}
+\end{figure}
 %
 %\begin{figure}
 %    \centering
