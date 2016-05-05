@@ -5,6 +5,7 @@ import flowdriven_convex as FDC
 import imageflowdriven as IF
 import comp_reg as CR
 import subquadraticData as SQ
+import DataTermMethods as dtm
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -19,21 +20,28 @@ data_penalize = 'quadratic'
 MotionTerm = 'GCA'
 
 savefigure =  0 # To save figure displayfigure must be TRUE
-savefig_dir = '/home/shomec/e/espenjv/Semester Project/Figures/'
+# savefig_dir = '/home/shomec/e/espenjv/Semester Project/Figures/'
+savefig_dir =  'C:\Users\Espen\opticalflow\Figures'
+figure_title = 'QuadraticData_GCA HS_Smoothness'
+figure_filename = 'QuadraticDataGCA.pdf'
 displayfigure = 1
 
 # Global scale regularization
-regu = 0.1
-#image_dir = 'C:/Users/Espen/opticalflow/HamburgTaxi/'
-image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
+regu = 0.5
+# image_dir = 'C:/Users/Espen/opticalflow/HamburgTaxi/'
+image_dir = 'C:/Users/Espen/opticalflow/2011_09_26/2011_09_26_drive_0060_extract/image_00/data/'
+# image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
 
-gamma = 0.01
+gamma = 0.5
 sigma_regTensor = 0
 
-g1 = misc.imread(image_dir+'taxi-00.tif')
-g2 = misc.imread(image_dir+'taxi-01.tif')
-g3 = misc.imread(image_dir+'taxi-02.tif')
+# g1 = misc.imread(image_dir+'taxi-00.tif')
+# g2 = misc.imread(image_dir+'taxi-01.tif')
+# g3 = misc.imread(image_dir+'taxi-02.tif')
 
+g1 = misc.imread(image_dir+'0000000000.png')
+g2 = misc.imread(image_dir+'0000000001.png')
+g3 = misc.imread(image_dir+'0000000002.png')
 
 g1 = np.array(g1, dtype=np.double)
 g2 = np.array(g2, dtype=np.double)
@@ -77,7 +85,7 @@ if method is 'HS':
 			# Flow vector
 			w = spsolve(G,b)
 		elif MotionTerm is 'GCA':
-			M,b = HS.makeModelTerm(g1,g2,m,n,diff_method,gamma)
+			M,b = dtm.makeModelTerm(g1,g2,m,n,diff_method,gamma)
 			G = M + math.pow(regu,-2)*V
 			[G,b] = HS.neumann_boundary(G,b,m,n)
 			# Flow vector
@@ -122,7 +130,11 @@ if displayfigure:
 	plt.figure()
 	plt.imshow(flow_image)
 	plt.axis('off')
-	plt.title('Method: ' + method + ', diff_method: ' + diff_method + ', regu: ' + str(regu))
+	if figure_title is 'generic':
+		figure_title = 'Method: ' + method + ', diff_method: ' + diff_method + ', regu: ' + str(regu)
+	plt.title(figure_title)
 	if savefigure:
-		plt.savefig(savefig_dir+method + diff_method + str(regu)[2:] + '.pdf',bbox_inches = 'tight')
+		if figure_filename is 'generic':
+			figure_filename = method + diff_method + str(regu)[2:] + '.pdf'
+		plt.savefig(savefig_dir+method + figure_filename,bbox_inches = 'tight')
 	plt.show()

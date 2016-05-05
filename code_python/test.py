@@ -4,6 +4,7 @@ import NE_method as NE
 import flowdriven_convex as FDC
 import imageflowdriven as IF
 import multigrid as mg
+import imageDifferentiationMethods as idm
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -18,8 +19,8 @@ displayfigure = 1
 
 # Global scale regularization
 regu = 0.03
-#image_dir = 'C:/Users/Espen/opticalflow/HamburgTaxi/'
-image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
+image_dir = 'C:/Users/Espen/opticalflow/HamburgTaxi/'
+# image_dir = '/home/shomec/e/espenjv/Semester Project/HamburgTaxi/'
 
 g1 = misc.imread(image_dir+'taxi-00.tif')
 g2 = misc.imread(image_dir+'taxi-01.tif')
@@ -29,7 +30,10 @@ g2 = np.array(g2, dtype=np.double)
 
 [m,n] = g1.shape
 
-c = np.subtract(np.reshape(g2.T,[1,m*n])[0],np.reshape(g1.T,[1,m*n])[0])
+g1 = np.reshape(g1.T,[1,m*n])[0]
+g2 = np.reshape(g2.T,[1,m*n])[0]
+
+# c = np.subtract(np.reshape(g2.T,[1,m*n])[0],np.reshape(g1.T,[1,m*n])[0])
 
 
 g = g1
@@ -108,19 +112,19 @@ g = g1
 v = (np.array([1, 2, 3])).T
 u = np.array([2, 1, 4]).T
 
-print np.kron(np.ones(3),v)
+# print np.kron(np.ones(3),v)
 # print u.shape
 # print np.multiply(u,v)
 # print (u).dot((v.T))
 # print np.power(v,2)
 
-neumann_x = sparse.hstack((sparse.diags(-np.ones(m),0),sparse.diags(np.ones(m),0)))
-neumann_y = np.zeros((m,m))
-neumann_y[0,:2] = [-1,1]
-neumann_y[m-1,m-2:m] = [-1,1]
-print neumann_x
-neumann = sparse.block_diag((neumann_x,neumann_y,neumann_x))
-print neumann
+# neumann_x = sparse.hstack((sparse.diags(-np.ones(m),0),sparse.diags(np.ones(m),0)))
+# neumann_y = np.zeros((m,m))
+# neumann_y[0,:2] = [-1,1]
+# neumann_y[m-1,m-2:m] = [-1,1]
+# print neumann_x
+# neumann = sparse.block_diag((neumann_x,neumann_y,neumann_x))
+# print neumann
 #
 # lam = 0.0001
 # D = HS.makeDmatrix(g)
@@ -208,3 +212,59 @@ print neumann
 #
 # print r1
 # print r2
+
+k = 0.00001
+
+[gx,gy] = idm.forwardDifferenceImage(g,m,n)
+[gxx,gxy] = idm.forwardDifferenceImage(gx,m,n)
+[gyx,gyy] = idm.forwardDifferenceImage(gy,m,n)
+
+[g2x,g2y] = idm.forwardDifferenceImage(g2,m,n)
+[g2xx,g2xy] = idm.forwardDifferenceImage(g2x,m,n)
+[g2yx,g2yy] = idm.forwardDifferenceImage(g2y,m,n)
+
+gt = np.subtract(g2,g1)
+gxt = np.subtract(g2x,gx)
+gyt = np.subtract(g2y,gy)
+
+# plt.plot(np.sqrt(np.power(gx,2) + np.power(gy,2)))
+
+# Normalisation terms
+theta_0 = np.sqrt(np.power(gx,2) + np.power(gy,2) + k**2)
+theta_x = np.sqrt(np.power(gxx,2) + np.power(gxy,2) + k**2)
+theta_y = np.sqrt(np.power(gyx,2) + np.power(gyy,2) + k**2)
+
+gt = np.divide(gt,theta_0)
+gxt = np.divide(gxt,theta_x)
+gyt = np.divide(gyt,theta_y)
+
+gx = sparse.diags(np.divide(gx,theta_0),0,format='csr')
+gy = sparse.diags(np.divide(gy,theta_0),0,format='csr')
+gxx = sparse.diags(np.divide(gxx,theta_x),0,format='csr')
+gyx = sparse.diags(np.divide(gyx,theta_x),0,format='csr')
+gxy = sparse.diags(np.divide(gxy,theta_y),0,format='csr')
+gyy = sparse.diags(np.divide(gyy,theta_y),0,format='csr')
+
+
+
+grad_g = sparse.hstack((gx,gy),format='csr')
+grad_gx = sparse.hstack((gxx,gyx),format='csr')
+grad_gy = sparse.hstack((gxy,gyy),format='csr')
+gamma = 0
+
+M = (grad_g.T).dot(grad_g) + gamma*((grad_gx.T).dot(grad_gx) + (grad_gy.T).dot(grad_gy))
+# RHS
+b = - ((grad_g.T).dot(gt) + gamma*((grad_gx.T).dot(gxt) + (grad_gy.T).dot(gyt)))
+
+diff_method = 'forward'
+
+D = HS.makeDmatrix(g,m,n,diff_method)
+print D.shape
+
+M1 = D.T.dot(D)
+
+print M1.shape
+
+print M.shape
+print grad_g.shape
+print gt.shape
