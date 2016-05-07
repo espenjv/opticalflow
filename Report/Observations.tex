@@ -25,23 +25,55 @@
 \author{Espen Johansen Velsvik}
 \maketitle
 
-\section*{Choice of regularization parameters}
-An experiment for choosing the regularization parameter $\sigma$ was run on the HS algorithm. From Figure \ref{reguHS} it is seen that the choice of $\sigma$ that gives the best result lies somewhere between 0.007 and 0.01. The NE algorithm was then run with $\sigma = 0.007$ for different values of the regularization parameter $\kappa$ to produce Figure \ref{reguNE}. It is seen that the best result comes from choosing $\kappa \approx 1$.
+%\section*{Choice of regularization parameters}
+%An experiment for choosing the regularization parameter $\sigma$ was run on the HS algorithm. From Figure \ref{reguHS} it is seen that the choice of $\sigma$ that gives the best result lies somewhere between 0.007 and 0.01. The NE algorithm was then run with $\sigma = 0.007$ for different values of the regularization parameter $\kappa$ to produce Figure \ref{reguNE}. It is seen that the best result comes from choosing $\kappa \approx 1$.
+%
+%Using the a Sobel filter to approximate the gradients, the maximum value for the term $|\nabla g|^2$ is about $5.5 \cdot 10^5$, which explains why $\kappa$ can be chosen to be relatively large.
+%
+%\begin{figure}
+%    \centering
+%    \includegraphics[scale=0.8]{regularizationHS}
+%    \caption{Different choices for regularization parameter $\sigma$ using the HS algorithm}
+%    \label{reguHS}
+%\end{figure}
+%
+%\begin{figure}
+%    \centering
+%    \includegraphics[scale=0.8]{regularizationNE}
+%    \caption{Different choices for regularization parameter $\kappa$ using the NE algorithm}
+%    \label{reguNE}
+%\end{figure}
 
-Using the a Sobel filter to approximate the gradients, the maximum value for the term $|\nabla g|^2$ is about $5.5 \cdot 10^5$, which explains why $\kappa$ can be chosen to be relatively large.
+\section{Data term}
+\subsection{Normalization}
+Figure (\ref{HS}) shows the Horn and Schunck method with no normalization. It is seen to pick up a lot of noise in the areas in the upper right of the image. Figure (\ref{HS_normalized}) show the normalized Horn and Schunck mehtod. 
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.8]{regularizationHS}
-    \caption{Different choices for regularization parameter $\sigma$ using the HS algorithm}
-    \label{reguHS}
+    \includegraphics[scale=0.7]{Thesis/Figures/HS}
+    \caption{Result for the Horn and Schunck method, regu=0.03}
+    \label{HS}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.8]{regularizationNE}
-    \caption{Different choices for regularization parameter $\kappa$ using the NE algorithm}
-    \label{reguNE}
+    \includegraphics[scale=0.7]{Thesis/Figures/HS_normalized}
+    \caption{Result for the normalized quadratic penalized data term (normalized HS), $\sigma=0.3$, $\zeta = 6$}
+    \label{HS_normalized}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{Thesis/Figures/IFD_normalized}
+    \caption{Result for the normalized quadratic penalized data term with Image/Flow driven smoothness term, $\sigma=0.3$, $\zeta = 6$}
+    \label{IFD_normalized}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{Thesis/Figures/CR_normalized}
+    \caption{Result for the normalized quadratic penalized data term with Constraint driven smoothness term, $\sigma=0.3$, $\zeta = 6$}
+    \label{CR_normalized}
 \end{figure}
 
 \end{document}

@@ -44,19 +44,19 @@
 \lstnewenvironment{code}[3]{\lstset{numbers=right,language=#1,label=#2,caption=#3,mathescape}}{}
 
 % Citations
-\DeclareCiteCommand{\footpartcite}[\mkbibfootnote]
-  {\usebibmacro{prenote}}
-  {\usebibmacro{citeindex}%
-   \printnames{labelname}\addcomma\space%
-   \printfield[citetitle]{title}}%\addnbspace%
-   %\mkbibbrackets{\usebibmacro{cite}}}
-  {\addsemicolon\space}
-  {\usebibmacro{postnote}}
-
-\DeclareMultiCiteCommand{\footpartcites}[\mkbibfootnote]{\footpartcite}{\addsemicolon\space}
-
-\let\cite=\footcite
-\let\cites=\footcites
+%\DeclareCiteCommand{\footpartcite}[\mkbibfootnote]
+%  {\usebibmacro{prenote}}
+%  {\usebibmacro{citeindex}%
+%   \printnames{labelname}\addcomma\space%
+%   \printfield[citetitle]{title}}%\addnbspace%
+%   %\mkbibbrackets{\usebibmacro{cite}}}
+%  {\addsemicolon\space}
+%  {\usebibmacro{postnote}}
+%
+%\DeclareMultiCiteCommand{\footpartcites}[\mkbibfootnote]{\footpartcite}{\addsemicolon\space}
+%
+%\let\cite=\footcite
+%\let\cites=\footcites
 
 % Mathematical notation
 \newcommand{\abs}[1]{| #1 |}
