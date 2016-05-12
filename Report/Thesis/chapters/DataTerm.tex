@@ -1,11 +1,11 @@
 \chapter{The Data Term}
 The goal of the penalization of the data term is to make
 \begin{align*}
-\rho_0(\textbf{w}) = (\nabla f^T \textbf{w} + f_t), 
+\Upsilon_0(\textbf{w}) = (\nabla f^T \textbf{w} + f_t), 
 \end{align*}
 as close to zero as possible. This is commonly done by penalizing high values of 
 \begin{align*}
-\rho_0^2 = (\nabla f^T \textbf{w} + f_t)^2.
+\Upsilon_0^2 = (\nabla f^T \textbf{w} + f_t)^2.
 \end{align*}
 \section{Normalization}
 \cite{zimmer2011optic} reported that normalizing the data term can be beneficial. This can be seen from rewriting the squared term above as
@@ -24,17 +24,17 @@ d = \frac{\nabla f^T}{|\nabla f|} \left( \textbf{w} - \textbf{w}_n \right),
 \end{align}
 so that
 \begin{align}
-\label{rho_dep}
-\rho_0(u,v)^2 = |\nabla f|^2 d^2.
+\label{Upsilon_dep}
+\Upsilon_0(u,v)^2 = |\nabla f|^2 d^2.
 \end{align}
-Let the flow vector $\textbf{w}$ define a point in the uv-plane. The image gradient $\nabla f$ is then orthogonal to the line defined by $\rho_0(u,v) = 0$. Indeed, for two points $\textbf{w}_1$ and $\textbf{w}_2$, both satisfying $\rho_0(u,v) = 0$,
+Let the flow vector $\textbf{w}$ define a point in the uv-plane. The image gradient $\nabla f$ is then orthogonal to the line defined by $\Upsilon_0(u,v) = 0$. Indeed, for two points $\textbf{w}_1$ and $\textbf{w}_2$, both satisfying $\Upsilon_0(u,v) = 0$,
 \begin{align*}
 \nabla f^T (\textbf{w}_1-\textbf{w}_2) = f_t - f_t = 0.
 \end{align*}
-From this one can conclude that $d$ is the distance from the line defined by $\rho_0(u,v) = 0$ and the point $\textbf{w}$ in the uv-plane. A point with $d = 0$ would satisfy the constraint. From this geometric interpretation Zimmer et al. \cite{zimmer2011optic} suggested that one should ideally use $d^2$ to penalize the data term, which is weighted by the square of the image gradient in the expression for $\rho_0^2$,  as seen in (\ref{rho_dep}). Thus the normalized data constraint is
+From this one can conclude that $d$ is the distance from the line defined by $\Upsilon_0(u,v) = 0$ and the point $\textbf{w}$ in the uv-plane. A point with $d = 0$ would satisfy the constraint. From this geometric interpretation Zimmer et al. \cite{zimmer2011optic} suggested that one should ideally use $d^2$ to penalize the data term, which is weighted by the square of the image gradient in the expression for $\Upsilon_0^2$,  as seen in (\ref{Upsilon_dep}). Thus the normalized data constraint is
 \begin{align}
-\label{norm_rho}
-\bar{\rho}_0 = \theta_0 (\nabla f^T \textbf{w}+ f_t),
+\label{norm_Upsilon}
+\bar{\Upsilon}_0 = \theta_0 (\nabla f^T \textbf{w}+ f_t),
 \end{align}
 where the normalisation factor $\theta_0$ is defined as
 \begin{align*}
@@ -53,21 +53,21 @@ which gives
 \end{align}
 To combine the two constancy assumption into one constraint,  define the normalized penalization terms coming from the gradient constancy assumption as
 \begin{align}
-\bar{\rho}_x(\textbf{w}) = \theta_x (\nabla f_x \textbf{w} + f_{xt}) & & \text{and} & & \bar{\rho}_y(\textbf{w})  = \theta_y (\nabla f_y \textbf{w} + f_{yt}),
+\bar{\Upsilon}_x(\textbf{w}) = \theta_x (\nabla f_x \textbf{w} + f_{xt}) & & \text{and} & & \bar{\Upsilon}_y(\textbf{w})  = \theta_y (\nabla f_y \textbf{w} + f_{yt}),
 \end{align}
 where 
 \begin{align*}
 \theta_x = \frac{1}{|\nabla f_x|^2 + \zeta^2}. & & \text{and} & & \theta_y = \frac{1}{|\nabla f_y|^2 + \zeta^2},
 \end{align*}
-and let the normalized joint penalization term $\bar{\rho}$ be defined by the following equation
+and let the normalized joint penalization term $\bar{\Upsilon}$ be defined by the following equation
 \begin{align*}
-\bar{\rho}(\textbf{w})^2 &= \bar{\rho}_0(\textbf{w})^2 + \gamma (\bar{\rho}_x(\textbf{w})^2 + \bar{\rho}_y(\textbf{w})^2) \\
-&=  \bar{\rho}_0(\textbf{w})^2 + \gamma \bar{\rho}_{xy}(\textbf{w})^2.
+\bar{\Upsilon}(\textbf{w})^2 &= \bar{\Upsilon}_0(\textbf{w})^2 + \gamma (\bar{\Upsilon}_x(\textbf{w})^2 + \bar{\Upsilon}_y(\textbf{w})^2) \\
+&=  \bar{\Upsilon}_0(\textbf{w})^2 + \gamma \bar{\Upsilon}_{xy}(\textbf{w})^2.
 \end{align*}
 \section{Robustness Enhancements}
 As noted in (\ref{sec:Data_penalization}) the data term can be penalized in different ways. Horn and Schunck \cite{HS} used a quadratic penalizer,
 \begin{align}
-M(u,v) = \rho(u,v) ^2 = (\nabla f ^T \textbf{w}+ f_t)^2.
+M(u,v) = \Upsilon(u,v) ^2 = (\nabla f ^T \textbf{w}+ f_t)^2.
 \end{align}
 but as previously asserted this penalizer has relatively poor robustness against outliers. [Brox et al., 2004 Reference coming soon] used the subquadratic penaliser
 \begin{align*}
@@ -76,5 +76,5 @@ but as previously asserted this penalizer has relatively poor robustness against
 with a small regularization parameter $\epsilon > 0$. A separate penalization of the constraints coming from the two constancy assumptions was proposed by [Bruhn and Weickert, 2005], arguing that this would be constructive if one of the assumptions produces an outlier. Using a separate penalization gives the data term
 \begin{align}
 \label{sep_pen}
-M(u,v) = \Psi_M(\bar{\rho}_0^2) + \gamma \Psi_M(\bar{\rho}_{xy}^2).
+M(u,v) = \Psi_M(\bar{\Upsilon}_0^2) + \gamma \Psi_M(\bar{\Upsilon}_{xy}^2).
 \end{align}

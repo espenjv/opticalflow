@@ -35,11 +35,11 @@ Unfortunately, since the flow consists of 2 components, this equation is not eno
 As noted in the previous section, the system does not admit a unique solution with the constraints given so far. A common approach, an idea introduced by Horn and Schunck \cite{HS}, is to incorporate a smoothness constraint in the model. This smoothness constraint, also called the spatial coherence assumption \cite{Black199675}, says that points can not move independently in the brightness pattern. There has to be some smoothness in the flow vector for points belonging to the same object. In other words, points on the same object moves with the same velocity. A natural way of obtaining a smoother solution would be to minimize some term depending on the sizes of the gradients $\nabla u$ and $\nabla v$. As noted by Horn and Schunck, this leads to problems where one would expect discontinuous flow patterns. This is the case in images where occlusions are present, for instance an image of an object moving in a snow storm.
 
 \section{Variational Formulation}
-The aim now is to be able to combine these two constraint into one functional to be minimized. Now define 
+The aim now is to be able to combine these two constraint into one functional to be minimized. Now define
 \begin{align*}
-\rho_0(\textbf{w}) = \nabla f \cdot \textbf{w} + f_t.
+\Upsilon_0(\textbf{w}) = \nabla f \cdot \textbf{w} + f_t.
 \end{align*}
-If the constraint (\ref{BC}) coming from the brightness constancy assumption is to be satisfied, one would want to minimize a function that penalizes high values of $\rho$. For now this term is called the data term $M(u,v)$. At the same time one would want to satisfy the smoothness constraint, that is, one would want to define a smoothness function that depends on the values of the gradients $\nabla u$ and $\nabla v$. Let this smoothness function be denoted as $V(\nabla u, \nabla v)$. To minimize both $M(u,v)$ and $V(\nabla u, \nabla v)$ one forms the following global energy function:
+If the constraint (\ref{BC}) coming from the brightness constancy assumption is to be satisfied, one would want to minimize a function that penalizes high values of $\Upsilon$. For now this term is called the data term $M(u,v)$. At the same time one would want to satisfy the smoothness constraint, that is, one would want to define a smoothness function that depends on the values of the gradients $\nabla u$ and $\nabla v$. Let this smoothness function be denoted as $V(\nabla u, \nabla v)$. To minimize both $M(u,v)$ and $V(\nabla u, \nabla v)$ one forms the following global energy function:
 \begin{align}
 \label{OF_funtional}
 E(u,v) = \frac{1}{2} \int_\Omega (M(u,v) + \frac{1}{\sigma^2} V(\nabla u, \nabla v)) \, dx \, dy,
@@ -86,12 +86,12 @@ This is called the Euler-Lagrange equation of variational calculus. From this re
 
 \section{Penalizing The Data Term}
 \label{sec:Data_penalization}
-When the brightness constancy assumption was first introduced, Horn and Schunck used a quadratic penalization of $\rho$,which is equivalent to least-squares minimization, but other penalization functions have been proposed. Least-squares minimization is very sensitive to outliers. In the case of the data term, these outliers would be noise in the image (a pixel that jumps from low intensity to high intensity without corresponding to the motion of an object). Black and Anandan \cite{Black199675} proposed several subquadratic penalizer functions, arguing that a subquadratic penalizer would improve the robustness in the presence of outliers. In general the data term $M(u,v)$ can be written as
+When the brightness constancy assumption was first introduced, Horn and Schunck used a quadratic penalization of $\Upsilon$,which is equivalent to least-squares minimization, but other penalization functions have been proposed. Least-squares minimization is very sensitive to outliers. In the case of the data term, these outliers would be noise in the image (a pixel that jumps from low intensity to high intensity without corresponding to the motion of an object). Black and Anandan \cite{Black199675} proposed several subquadratic penalizer functions, arguing that a subquadratic penalizer would improve the robustness in the presence of outliers. In general the data term $M(u,v)$ can be written as
 \begin{align}
 \label{DataPenalize}
-M(u,v) = \Psi_M(\rho_0^2),
+M(u,v) = \Psi_M(\Upsilon_0^2),
 \end{align}
-where $\Psi_M(s^2)$ is some penalizing function aiming to minimize $\rho_0^2$. 
+where $\Psi_M(s^2)$ is some penalizing function aiming to minimize $\Upsilon_0^2$. 
 
 \section{Penalizing The Smoothness Term}
 The smoothness terms considered here will be quadratically dependent on the gradient in each direction, thus it is convenient to write the smoothness term in the form
@@ -106,8 +106,8 @@ After defining the data term and the smoothness term using penalizing functions 
 \begin{equation}
 \label{EL_regu}
 \begin{aligned}
-\Psi_M'(\rho_0^2)(f_xu+f_yv + f_t)f_x - \frac{1}{\sigma^2} \text{div} \left(\Psi_V'(\nabla u^T \Theta_u \nabla u)  \Theta_u \nabla u \right) = 0 \\
-\Psi_M'(\rho_0^2)(f_xu+f_yv + f_t)f_y - \frac{1}{\sigma^2} \text{div} \left(\Psi_V'(\nabla v^T \Theta_v \nabla v)  \Theta_v \nabla v \right) = 0
+\Psi_M'(\Upsilon_0^2)(f_xu+f_yv + f_t)f_x - \frac{1}{\sigma^2} \text{div} \left(\Psi_V'(\nabla u^T \Theta_u \nabla u)  \Theta_u \nabla u \right) = 0 \\
+\Psi_M'(\Upsilon_0^2)(f_xu+f_yv + f_t)f_y - \frac{1}{\sigma^2} \text{div} \left(\Psi_V'(\nabla v^T \Theta_v \nabla v)  \Theta_v \nabla v \right) = 0
 \end{aligned}
 \end{equation}
 for $(x,y) \in \Omega$ with Neumann boundary conditions. The theoretical framework presented up to this point is the same for all the methods considered here. The main distinction for each method will be across which boundaries the flow field is smoothed, that is, the choice of diffusion matrix. We start with the simplest choice; the uniform smoothness approach by Horn and Schunck.

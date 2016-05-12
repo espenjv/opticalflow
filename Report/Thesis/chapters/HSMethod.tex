@@ -1,12 +1,12 @@
 \chapter{The Approach of Horn and Schunck}
 \chaptermark{The Approach of Horn and Schunck}
-The research of Horn and Shunck has formed the basis of further research in the field of optical flow. They proposed the following quadratic penalized data term
+The research of Horn and Schunck has formed the basis of further research in the field of variational methods for optical flow. They proposed the following quadratic penalized data term
 \begin{align}
 M(\textbf{w}) = (\nabla f^T \textbf{w} + f_t)^2,
 \end{align}
 which is equivalent to choosing
 \begin{align*}
-\Psi_M(\rho^2) = \rho^2
+\Psi_M(\Upsilon^2) = \Upsilon^2
 \end{align*}
 in the framework of (\ref{DataPenalize}). The contribution to (\ref{EL}) from the data term is thus 
 \begin{equation}
@@ -20,9 +20,10 @@ V(\nabla u, \nabla v) = |\nabla u|^2 + |\nabla v|^2.
 \end{align*}
 This is a homogeneous regularizer which means that it applies an equal amount of diffusion in all directions. In the framework of (\ref{EL_regu}), this is equivalent to the diffusion matrices $\Theta_u$ and $\Theta_v$ being the identity matrix. Using this function as a flow regularizer gives
 \begin{align*}
-\partial_ {\textbf{w}_{x_i}} V = 2\textbf{w}_{x_i},
+\partial_ {\textbf{w}_{x}} V = 2\textbf{w}_{x} \\
+\partial_ {\textbf{w}_{y}} V = 2\textbf{w}_{y}.
 \end{align*}
-for $x_i = x, y$. Dividing by 2 in all terms results in (\ref{EL}) taking the form 
+Dividing by 2 in all terms results in (\ref{EL}) taking the form 
 \begin{equation}
 \label{EL_HS}
 \begin{aligned}
@@ -32,7 +33,7 @@ for $x_i = x, y$. Dividing by 2 in all terms results in (\ref{EL}) taking the fo
 \textbf{w}_{y} &= 0 \quad \text{on} \ \Gamma_n \ \text{and} \ \Gamma_s,
 \end{aligned}
 \end{equation}
-which can be seen as a system of coupled Poisson equations with Neumann boundary conditions:
+which can be seen as a system of coupled linear elliptic equations with Neumann boundary conditions:
 \begin{align*}
 -\frac{1}{\sigma^2} \Delta u + f_x ^2 u = - (F(v) + f_tf_x) \\
 -\frac{1}{\sigma^2} \Delta v + f_y ^2 v = - (F(u) + f_tf_y) ,
@@ -42,27 +43,33 @@ where $F(q) = f_xf_y q$.
 
 \section{Discretizing the Horn and Schunck method}
 \label{sec: disc}
-Let now our image be of size m-by-n, and let $f^1$ and $f^2$ be the image at $t=1$ an $t=2$ respectively. Also, we flatten the regular 2-dimensional grid in $\Omega$ and consider now $(\xi^i)_ {i \in [mn]}$ so that $(\xi^i) = (x,y) = (\left \lfloor{i/m}\right \rfloor, i - \left \lfloor{i/m}\right \rfloor)$, when assuming the distance between vertical and horizontal grid points in $\Omega$ are 1. The corresponding vector representation of the image $f$ is denoted as $\textbf{f}(\xi^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\textbf{w}(\xi^i)$ is represented as the following vector in $\mathbb{R}^{2mn}$:
+Let now our image be of size $m-\times n$, and let $f^1$ and $f^2$ be the image at $t_1=1$ and $t_2=2$ respectively. Also, we flatten the regular 2-dimensional grid in $\Omega$ and consider now $(\xi^i)_ {i \in [mn]}$ so that $(\xi^i) = (x,y) = (\left \lfloor{i/m}\right \rfloor, i - \left \lfloor{i/m}\right \rfloor)$, when assuming the distance between vertical and horizontal grid points in $\Omega$ are 1. The corresponding vector representation of the image $f$ is denoted as $\textbf{f}(\xi^i) \in \mathbb{R}^{mn}$. Continuing this notation, the discrete flow values $\textbf{w}(\xi^i)$ are represented as the following vector in $\mathbb{R}^{2mn}$:
 \begin{align*}
      \textbf{w}(\xi^i)=\begin{bmatrix}
          u(\xi^i)_{i\in [mn]}  \\
          v(\xi^i)_{i \in [mn]} \\
         \end{bmatrix}.
 \end{align*}
-For the discretization of the image gradients in (\ref{EL_HS}), the forward difference was used on $f^1$, producing the two vectors $\textbf{d}_x(\xi^i)$ and $\textbf{d}_y(\xi^i)$ in $\mathbb{R}^{mn)}$, where the gradients on the boundary are assumed to be zero. The time derivative $f_t$ is discretized using forward difference with time step $\Delta t = t_2 - t_1 = 1$ as shown below:
+For the discretization of the image gradients in (\ref{EL_HS}), forward differences were used on $f^1$, producing the two vectors $\textbf{d}_x(\xi^i)$ and $\textbf{d}_y(\xi^i)$ in $\mathbb{R}^{mn}$, where the gradients on the eastern and southern boundary are assumed to be zero. The time derivative $f_t$ is discretized using forward difference, with time step $\Delta t = t_2 - t_1 = 1$ as shown below:
 \begin{align*}
 \textbf{c}(\xi^i) = \textbf{f}^2(\xi^i) - \textbf{f}^1(\xi^i),
 \end{align*} 
-where $\textbf{c}(\xi^i)$ is a vector in $\mathbb{R}^{mn}$. Normally when choosing derivative approximations one wants as high order as possible so that the truncation error goes to zero as one increases the number of grid points. In this case the number of grid points is fixed, so there is little to gain from choosing higher order approximations; it is best to choose the derivative approximation that results in the simplest discretization. Thus for the flow vector in (\ref{EL_HS}), the first derivative was approximated using backward difference, and the second was approximated using forward difference. Let now $L_x$ and $L_y$ be the matrices performing a forward difference on the components of the vector $\textbf{w}$ in $x$- and $y$-direction respectively. The gradient is then represented as
+where $\textbf{c}(\xi^i)$ is a vector in $\mathbb{R}^{mn}$. Normally when choosing derivative approximations one wants as high order as possible so that the truncation error goes to zero as one increases the number of grid points. In this case the number of grid points is fixed, so there is little to gain from choosing higher order approximations; it is best to choose the derivative approximation that results in the simplest discretization. Thus for the flow vector in (\ref{EL_HS}), the divergence operator was approximated using backward difference, and the gradient operator was approximated using forward difference. Let now $L_x$ and $L_y$ be the matrices performing a forward difference on the components of the vector $\textbf{w}$ in $x$- and $y$-direction respectively. The gradient is then represented as
 \begin{align*}
 L \textbf{w}(\xi^i) = \begin{bmatrix}
          \tilde{u}_x(\xi^i)_{i\in [mn]}  \\
          \tilde{u}_y(\xi^i)_{i\in [mn]}  \\
          \tilde{v}_x(\xi^i)_{i\in [mn]} \\
          \tilde{v}_y (\xi^i)_{i\in [mn]} \\
+        \end{bmatrix} =
+         \begin{bmatrix}
+         u(\xi^i+m)_{i\in [mn]} - u(\xi^i)_{i\in [mn]}  \\
+         u(\xi^i+1)_{i\in [mn]} - u(\xi^i)_{i\in [mn]}  \\
+         v(\xi^i+m)_{i\in [mn]} - v(\xi^i)_{i\in [mn]} \\
+         v(\xi^i+1)_{i\in [mn]} - v(\xi^i)_{i\in [mn]} \\
         \end{bmatrix}
 \end{align*}
-where $\tilde{u}_x, \tilde{v}_x, \tilde{u}_y, \tilde{v}_y \in \mathbb{R}^{mn}$ are vector approximations to the derivatives. This means that $L$ is the following  block matrix:
+where $\tilde{u}_x, \tilde{v}_x, \tilde{u}_y, \tilde{v}_y \in \mathbb{R}^{mn}$ are vector approximations to the derivatives. This means that $L$ can be written as a block matrix of the form:
 \begin{align*}
 L = \left[
 \begin{array}{c c}
@@ -90,6 +97,15 @@ L_y & 0\\
 %         \tilde{v}_y(\xi^i) \\
 %        \end{bmatrix},
 %\end{align*} 
+
+
+The divergence is approximated by a backward difference which is the corresponds to a matrix multiplication with $-L^T$, and thus
+\begin{align*}
+ \begin{bmatrix}
+         \nabla \cdot \nabla u(\xi^i) \\
+         \nabla \cdot \nabla v(\xi^i)  \\
+        \end{bmatrix} \approx -L^TL \textbf{w}(\xi^i).
+\end{align*}
 Since (\ref{EL_HS}) gives one set of equations for the interior nodes and one for the boundary nodes, these have to separated into two coupled systems. The interior system can be written as
 \begin{align}
 (D^T D + \frac{1}{\sigma^2} L^TL) \textbf{w}(\xi^i) = - D^T \textbf{c}(\xi^i),
@@ -102,36 +118,45 @@ D_x & D_y
 \end{array}
 \right].
 \end{align*}
-$D_x$ and $D_y$ are diagonal matrices with the elements of $\textbf{d}_x(\xi^i)$ and $\textbf{d}_y(\xi^i)$ for $(\xi^i) \in \Omega$ along its diagonals respectively. When using a forward difference approximation of the derivative, the derivative approximations in the points next to $\Gamma_E$ and $\Gamma_S$ on the grid will be dependent on points on these boundaries respectively, and the derivative on these boundaries are set to zero. Let $\alpha(\xi^i) = (\textbf{d}_x(\xi^i) u(\xi^i) + \textbf{d}_y(\xi^i) v(\xi^i) + \textbf{c}(\xi^i))$. For $(\xi^{i+m}) \in \Gamma_E$ one gets 
-\begin{align*}
-\alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2}\left[ L_x^T \left(u(\xi^i)-u(\xi^{(i+m)}) \right) + L_y^T \left( u(\xi^i)-u(\xi^{(i+1)}) \right) \right] &= 0 \\
-\alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} \left[ L_x^T \left( v(\xi^i)-v(\xi^{(i+m)}) \right) + L_y^T \left( v(\xi^i)-v(\xi^{(i+1)}) \right) \right] &= 0,
-\end{align*}
-but since the derivative on the boundary is zero, one must enforce that $-L_x^Tq(\xi^{i+m}) = 0$ for $q = u,v$. This leads to
+The matrices $D_x$ and $D_y$ are diagonal matrices with the elements of $\textbf{d}_x(\xi^i)$ and $\textbf{d}_y(\xi^i)$ for $(\xi^i) \in \Omega$ along its diagonals respectively. When using a forward difference approximation of the derivative, the derivative approximations in the points next to the eastern boundary $\Gamma_E$ and the southern boundary $\Gamma_S$ on the grid will be dependent on points on these boundaries respectively, and the derivative on these boundaries are set to zero. This means that one must enforce  that the backward difference is zero on these boundaries, which leads to
 \begin{align}
 \label{neumann1}
-u(\xi^i) &= u(\xi^{(i+m)})  \\
+u(\xi^{(i-m)}) &= u(\xi^{i})  \\
 \label{neumann2}
-v(\xi^i) &= v(\xi^{(i+m)}) 
+v(\xi^{(i-m)}) &= v(\xi^{i})
 \end{align}
- so
-\begin{align*}
-\alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2} L_y^T L_y u(\xi^i) &= 0 \\
-\alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} L_y^T L_y v(\xi^i)  &= 0.
-\end{align*}
-Equivalently when $(\xi^{i+1}) \in \Gamma_S$,
+for $(\xi^i) \in \Gamma_E$.
+%Let $\alpha(\xi^i) = (\textbf{d}_x(\xi^i) u(\xi^i) + \textbf{d}_y(\xi^i) v(\xi^i) + \textbf{c}(\xi^i))$. For $(\xi^{i+m}) \in \Gamma_E$ one gets 
+%\begin{align*}
+%\alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2}\left[ L_x^T \left(u(\xi^i)-u(\xi^{(i+m)}) \right) + L_y^T \left( u(\xi^i)-u(\xi^{(i+1)}) \right) \right] &= 0 \\
+%\alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} \left[ L_x^T \left( v(\xi^i)-v(\xi^{(i+m)}) \right) + L_y^T \left( v(\xi^i)-v(\xi^{(i+1)}) \right) \right] &= 0,
+%\end{align*}
+%but 
+%This means that one must enforce  $-L_x^Tq(\xi^{i+m}) = 0$ for $q = u,v$, which leads to
+%\begin{align}
+%\label{neumann1}
+%u(\xi^i) &= u(\xi^{(i+m)})  \\
+%\label{neumann2}
+%v(\xi^i) &= v(\xi^{(i+m)}).
+%\end{align}
+% so
+%\begin{align*}
+%\alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2} L_y^T L_y u(\xi^i) &= 0 \\
+%\alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} L_y^T L_y v(\xi^i)  &= 0.
+%\end{align*}
+Equivalently when $(\xi^{i}) \in \Gamma_S$,
 \begin{align}
 \label{neumann3}
-u(\xi^i) &= u(\xi^{(i+1)})  \\
+u(\xi^{(i-1)}) &= u(\xi^{i})  \\
 \label{neumann4}
-v(\xi^i) &= v(\xi^{(i+1)}) 
+v(\xi^{(i-1)}) &= v(\xi^{i}).
 \end{align}
-which results in the following equations:
-\begin{align*}
-\alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2} L_x^T L_x u(\xi^i) &= 0 \\
-\alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} L_x^T L_x v(\xi^i) &= 0.
-\end{align*}
-On the two other boundaries $\Gamma_W$ and $\Gamma_N$, enforcing the forward differences to be zero at $(\xi^i) \in \Gamma_W$ leads to
+%which results in the following equations:
+%\begin{align*}
+%\alpha(\xi^i) \textbf{d}_x(\xi^i) - \frac{1}{\sigma^2} L_x^T L_x u(\xi^i) &= 0 \\
+%\alpha(\xi^i) \textbf{d}_y(\xi^i) - \frac{1}{\sigma^2} L_x^T L_x v(\xi^i) &= 0.
+%\end{align*}
+On the two other boundaries, the western boundary $\Gamma_W$ and the northern boundary $\Gamma_N$, enforcing the forward differences to be zero at $(\xi^i) \in \Gamma_W$ leads to
 \begin{align}
 \label{neumann5}
 u(\xi^i) &= u(\xi^{(i+m)})  \\

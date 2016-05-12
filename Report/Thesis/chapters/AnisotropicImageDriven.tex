@@ -2,31 +2,35 @@
 \sectionmark{Anisotropic Image Driven Regularization}
 The homogeneous regularizer of Horn and Schunck smoothes the flow field in all directions. This is a desirable property for internal pixels of an object, but not for pixels on the flow boundary. A homogeneous regularizer would smooth the flow field at pixels where one would expect the flow field to be discontinuous, which results in blurry flow edges. 
 \section{Regularization according to image structure}
-As one of the assumptions to the optical flow model is that different object has different brightness patterns, one would expect that flow boundaries coincide with image edges. Thus an amendment to this issue is to make a smoothness term which takes the gradients of the image into account, and smooths the flow field along image edges instead of across them. Such methods are called image-driven regularization methods. The anisotropic reguralizer of Nagel and Enkelmann \cite{Nagel:1986:ISC:11284.11285} performs smoothing along the image gradients and prevents smoothing across image edges. This is done by introducing a regularised projection matrix $P$, defined as
-\begin{align*}
-P(\nabla f) = \frac{1}{|\nabla f|^2 + 2 \kappa^2} (\nabla^{\bot} f (\nabla^{\bot})^T + \kappa^2 I),
-\end{align*}
-where $\nabla^{\bot} f= \left[-f_y, f_x \right]^T$, and $\kappa > 0$ is a regularization parameter. The smoothness term of Nagel and Enkelmann can now be written as the following
-\begin{align*}
-V_{AI}(\nabla u, \nabla v) = \nabla ^T u P(\nabla f) \nabla u + \nabla ^T v P(\nabla f) \nabla v,
-\end{align*}
-or written out 
-\begin{align*}
-V_{AI}(\nabla u, \nabla v) = \frac{\kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left( u_{\textbf{s}_1}^2 + v_{\textbf{s}_1}^2 \right) + \frac{|\nabla f|^2 + \kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left(u_{\textbf{s}_2}^2 + v_{\textbf{s}_2}^2 \right),
-\end{align*}
-where 
+As one of the assumptions to the optical flow model is that different object has different brightness patterns, one would expect that flow boundaries coincide with image edges. Thus an amendment to this issue is to make a smoothness term which takes the gradients of the image into account, and smooths the flow field along image edges instead of across them. Such methods are called image-driven regularization methods. To that end, consider the $2 \times 2$ structure tensor
+\begin{align}
+S_{\rho} = K_{\rho} * \left[ \nabla f \nabla f^T\right],
+\end{align}
+where $K_{\rho}$ is a spatial Gaussian with standard deviation $\rho$, with eigenvectors $\textbf{s}_1$ and $\textbf{s}_2$. These eigenvectors point across and alongt image structures respectively \cite{zimmer2011optic}. For $\rho = 0$ these vectors correspond to the unit vectors
 \begin{align}
 \label{ID_smoothingDir}
-&\textbf{s}_1 = \frac{1}{|\nabla f|}\begin{bmatrix}
+&\textbf{s}_1^0 = \frac{1}{|\nabla f|}\begin{bmatrix}
 f_x \\
 f_y
 \end{bmatrix},
-& & \textbf{s}_2 = \frac{1}{|\nabla f|}\begin{bmatrix}
+& & \textbf{s}_2^0 = \frac{1}{|\nabla f|}\begin{bmatrix}
 -f_y \\
 f_x
 \end{bmatrix}, & 
 \end{align}
-and $q_{\textbf{s}_i} = \textbf{s}_i^T \nabla u$ for $q = u, v$. That is, $q_{\textbf{s}_i}$ is the directional derivative of $q$ in the direction of the image gradient ($i=1$) or the orthogonal direction ($i=2$). This means that setting $\Theta=P$ in (\ref{EL_regu}) steers the diffusion so that flow vectors are smoothed along image edges and not across them.
+The anisotropic reguralizer of Nagel and Enkelmann \cite{Nagel:1986:ISC:11284.11285} performs smoothing in the direction given by $\textbf{s}_2$, that is along image structures, and prevents smoothing across image structures. Let $P$ be a $2 \times 2$ projection matrix defined as
+\begin{align*}
+P(\textbf{z}) = \frac{1}{|\textbf{z}|^2 + 2 \kappa^2} (\textbf{z}^{\bot} (\textbf{z}^{\bot})^T + \kappa^2 I),
+\end{align*}
+where $\kappa > 0$ is a regularization parameter, $\textbf{z}$ is a vector and $\textbf{z}^{\bot}$ is the orthogonal vector of same length. In practice, assuming $\kappa$ is small, the matrix multiplication $P(\textbf{z})\textbf{q}$ projects the vector $\textbf{q}$ in the direction given by $\textbf{z}^{\bot}$. The smoothness term of Nagel and Enkelmann can now be written as
+\begin{align*}
+V_{AI}(\nabla u, \nabla v) = \nabla ^T u P(\nabla f) \nabla u + \nabla ^T v P(\nabla f) \nabla v,
+\end{align*}
+or more explicitly
+\begin{align*}
+V_{AI}(\nabla u, \nabla v) = \frac{\kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left( u_{\textbf{s}_1}^2 + v_{\textbf{s}_1}^2 \right) + \frac{|\nabla f|^2 + \kappa^2}{|\nabla f|^2 + 2 \kappa^2} \left(u_{\textbf{s}_2}^2 + v_{\textbf{s}_2}^2 \right),
+\end{align*}
+where $q_{\textbf{s}_i} = \textbf{s}_i^T \nabla u$ for $q = u, v$. That is, $q_{\textbf{s}_i}$ is the directional derivative of $q$ in the direction of the image gradient ($i=1$) or the orthogonal direction ($i=2$). This means that setting $\Theta=P$ in (\ref{EL_regu}) steers the diffusion so that flow vectors are smoothed along image edges and not across them.
 
 \subsection{Discretizing the Nagel and Enkelmann smoothness term}
 Setting $\Theta=P$ in (\ref{EL_regu}) leads to the following Euler-Lagrange system:
@@ -38,7 +42,18 @@ Using the same discretizations for the derivatives as in \ref{sec: disc} one get
 \begin{align*}
 (D^T D + \frac{1}{\sigma^2} L^TPL) \textbf{w} = - D^T \textbf{c}
 \end{align*}
-for the internal pixels and with Neumann boundary conditions given in equations (\ref{neumann1}) to (\ref{neumann8}). (Maybe some more details on discretization?)
+for the internal pixels and with Neumann boundary conditions given in equations (\ref{neumann1}) to (\ref{neumann8}). P is the banded diagonal matrix
+
+P = \left[
+\begin{array}{c|c|c|c|c}
+\frac{\tilde{f_y}(\xi^1)^2}{\sqrt{\tilde{f_x}(\xi^1)^2 + \tilde{f_y}(\xi^1)^2} & 0 & 0 & \cdots& 0 \\ \hline
+0 &  I_{m} & -I_{m} & 0 & 0\\ \hline
+0 & 0 & \ddots & \ddots& 0 \\ \hline
+0 & \cdots & \cdots & 0_{m} & 0 _{m}
+\end{array}
+\right],
+\end{align*}
+ (Maybe some more details on discretization?)
 
 \subsection{Results for the anisotropic image-driven regularization}
 Experiments were run to find the best regularization parameter in the Nagel and Enkelmann smoothness term. The regularization parameter $\sigma$ found for the Horn and Schunck method is used to regularize the whole smoothness term. The resulting flow field for different choices of the regularization parameter $\kappa$, while keeping $\sigma$ constant, is shown in Figure (\ref{reguNE}). It is seen that choosing $\kappa = 0.8$ gives a fairly good segmentation of the object. Since the values for the gradient from the sobel derivative are relatively high, it is expected to also having to choose a relatively large value for $\kappa$ for sufficient regularization. Figure (\ref{reguNEHS}) compares the anisotropic smoothness term of Nagel and Enkelmann with $\kappa = 0.8$ with the homogeneous smoothness term of Horn and Schunck, both with using regularization parameter $\sigma = 0.003$. 

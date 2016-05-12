@@ -1,6 +1,7 @@
-\chapter{Rotational Invariant Constraint-Driven Regularization}
-\sectionmark{Rotational Invariant Constraint-Driven Regularization}
+\chapter{Constraint-Driven Regularization}
+\sectionmark{Constraint-Driven Regularization}
 Zimmer et. al \cite{zimmer2011optic} argued that the directional information coming from the eigenvectors $\textbf{s}_1$ and $\textbf{s}_2$ are inconsistent with the imposed constraints on the data term $M(u,v)$ if the $M(u,v)$ is designed to take into account the constraints (\ref{gca_constraint}) coming from the gradient constancy assumption. They opted for a regularization term that instead of steering the diffusion process along the image edges, steers the diffusion along constraint edges, defined by the eigenvectors $\textbf{r}_1$ and $\textbf{r}_2$ of the regularization matrix
 \begin{align}
 R_{\mu} = K_{\mu} * \left[ \theta_0(\nabla f \nabla f^T) + \gamma \left( \theta_x(\nabla f_x \nabla f_x^T) + \theta_y(\nabla f_y \nabla f_y^T) \right) \right].
 \end{align}
+The $R_{\mu} \in \mathbb{R}^{2x2}$ is not only dependent on information from one point, but a neighbourhood around this point due to the spatial Gaussian convolution. The size of the neighbourhood is determined by the standard deviation $\mu$ of the spatial Gaussian. 
