@@ -43,7 +43,7 @@ elseif strcmp(gradient,'forward')
     Dx = forwardDifferenceImage(g);
     Dy = forwardDifferenceImage(g');
 elseif strcmp(gradient,'backward')
-    Dx = backwardDiffer15enceImage(g);
+    Dx = backwardDifferenceImage(g);
     Dy = backwardDifferenceImage(g');
 end
 
